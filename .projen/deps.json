@@ -1,6 +1,10 @@
 {
   "dependencies": [
     {
+      "name": "@bleed-believer/path-alias",
+      "type": "build"
+    },
+    {
       "name": "@swc/core",
       "type": "build"
     },
@@ -36,6 +40,14 @@
       "type": "build"
     },
     {
+      "name": "alias-hq",
+      "type": "build"
+    },
+    {
+      "name": "babel-plugin-module-resolver",
+      "type": "build"
+    },
+    {
       "name": "eslint-config-prettier",
       "type": "build"
     },
@@ -66,6 +78,10 @@
       "type": "build"
     },
     {
+      "name": "packemon",
+      "type": "build"
+    },
+    {
       "name": "prettier",
       "type": "build"
     },
@@ -83,7 +99,19 @@
       "type": "build"
     },
     {
+      "name": "tsconfig-paths",
+      "type": "build"
+    },
+    {
+      "name": "tsx",
+      "type": "build"
+    },
+    {
       "name": "typescript",
+      "type": "build"
+    },
+    {
+      "name": "vitest",
       "type": "build"
     },
     {
@@ -91,7 +119,15 @@
       "type": "runtime"
     },
     {
+      "name": "@actions/exec",
+      "type": "runtime"
+    },
+    {
       "name": "@actions/github",
+      "type": "runtime"
+    },
+    {
+      "name": "zod",
       "type": "runtime"
     }
   ],

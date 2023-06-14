@@ -40,10 +40,10 @@ jspm_packages/
 !/.npmrc
 !/test/
 !/tsconfig.json
-!/tsconfig.dev.json
 !/src/
 /lib
 !/.eslintrc.json
 !/dist/
 !/action.yml
+!/./packemon.config.ts
 /.idea

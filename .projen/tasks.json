@@ -78,7 +78,7 @@
       "description": "Only compile",
       "steps": [
         {
-          "exec": "tsc --build"
+          "exec": "packemon build --loadConfigs --no-addFiles --no-addExports"
         }
       ]
     },
@@ -87,7 +87,7 @@
       "description": "Synthesize project files",
       "steps": [
         {
-          "exec": "ts-node --swc --project tsconfig.dev.json .projenrc.ts"
+          "exec": "npx -y tsx .projenrc.ts"
         }
       ]
     },
