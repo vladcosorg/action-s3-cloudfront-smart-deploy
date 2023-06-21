@@ -31,7 +31,7 @@
     "@vercel/ncc": "^0.36.1",
     "@vladcos/eslint-config": "^0.0.4",
     "@vladcos/prettier-config": "^0.0.8",
-    "@vladcos/projen-base": "^0.0.47",
+    "@vladcos/projen-base": "^0.0.48",
     "@vladcos/tsconfig": "^0.0.3",
     "alias-hq": "^6.2.1",
     "babel-plugin-module-resolver": "^5.0.0",
