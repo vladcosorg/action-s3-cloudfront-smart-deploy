@@ -1,0 +1,2 @@
+(dryrun) upload: [placeholder]/snapshot/inner/test.json to s3://[placeholder]/snapshot/inner/test.json
+(dryrun) upload: [placeholder]/snapshot/test.json to s3://[placeholder]/snapshot/test.json

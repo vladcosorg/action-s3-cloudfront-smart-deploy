@@ -20,6 +20,8 @@
 /action.yml linguist-generated
 /dist/** linguist-generated
 /LICENSE linguist-generated
+/mjs/** linguist-generated
 /package-lock.json linguist-generated
 /package.json linguist-generated
 /tsconfig.json linguist-generated
+/vitest.config.ts linguist-generated

@@ -4,4 +4,27 @@ name: "@vladcos/action-s3-cloudfront-smart-deploy"
 description: A GitHub Action for @vladcos/action-s3-cloudfront-smart-deploy
 runs:
   using: node16
-  main: dist/index.js
+  main: dist/index.mjs
+inputs:
+  from-local-path:
+    description: nooo
+    required: true
+  to-s3-uri:
+    description: No description
+    required: true
+  extra-arguments:
+    description: No description
+    required: false
+  distribution-id:
+    description: No description
+    required: false
+  invalidation-strategy:
+    description: |2-
+       The balanced strategy will attempt to use the maximize-precision approach unless there are [limit] or more targets. 
+      In that case it will switch to the minimize-invalidations strategy.
+    required: false
+    default: balanced
+  balanced-limit:
+    description: No description
+    required: false
+    default: 5

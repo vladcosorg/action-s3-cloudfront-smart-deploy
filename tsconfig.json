@@ -9,9 +9,10 @@
     "inlineSources": true,
     "lib": [
       "esnext",
-      "dom"
+      "dom",
+      "es2022"
     ],
-    "module": "commonjs",
+    "module": "ES2022",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -28,7 +29,7 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "exactOptionalPropertyTypes": true,
@@ -49,7 +50,9 @@
   "include": [
     ".projenrc.js",
     "src/**/*.ts",
-    "test/**/*.ts",
+    "tests/**/*.ts",
+    "vitest.config.ts",
+    "tests/**/*.ts",
     ".projenrc.ts",
     "projenrc/**/*.ts"
   ],

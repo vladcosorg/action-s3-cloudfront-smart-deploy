@@ -4,7 +4,7 @@ permissions-backup.acl
 /dist/changelog.md
 /dist/version.txt
 /.mergify.yml
-/test/
+/tests/
 /src/
 !/lib/
 !/lib/**/*.js

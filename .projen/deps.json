@@ -9,6 +9,10 @@
       "type": "build"
     },
     {
+      "name": "@types/lodash",
+      "type": "build"
+    },
+    {
       "name": "@types/node",
       "version": "^16",
       "type": "build"
@@ -69,7 +73,20 @@
       "type": "build"
     },
     {
+      "name": "execa",
+      "version": "7",
+      "type": "build"
+    },
+    {
       "name": "file:../projen-base/",
+      "type": "build"
+    },
+    {
+      "name": "fs-jetpack",
+      "type": "build"
+    },
+    {
+      "name": "lodash",
       "type": "build"
     },
     {
@@ -95,6 +112,10 @@
       "type": "build"
     },
     {
+      "name": "ts-extras",
+      "type": "build"
+    },
+    {
       "name": "ts-node",
       "type": "build"
     },
@@ -107,7 +128,15 @@
       "type": "build"
     },
     {
+      "name": "type-fest",
+      "type": "build"
+    },
+    {
       "name": "typescript",
+      "type": "build"
+    },
+    {
+      "name": "vite-tsconfig-paths",
       "type": "build"
     },
     {
