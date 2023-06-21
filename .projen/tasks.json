@@ -87,7 +87,7 @@
       "description": "Synthesize project files",
       "steps": [
         {
-          "exec": "npx -y tsx .projenrc.ts"
+          "exec": "npx -y tsx -r tsconfig-paths/register .projenrc.ts"
         }
       ]
     },

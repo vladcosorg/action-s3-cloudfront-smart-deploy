@@ -4,7 +4,8 @@ import { TypeScriptModuleResolution } from 'projen/lib/javascript'
 const project = new GithubAction({
   defaultReleaseBranch: 'main',
   devDeps: [
-    'file:../projen-base/',
+    '@vladcos/projen-base',
+    'tsconfig-paths',
     'fs-jetpack',
     'lodash',
     '@types/lodash',

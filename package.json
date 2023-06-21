@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@bleed-believer/path-alias": "^0.15.2",
-    "@swc/core": "^1.3.64",
+    "@swc/core": "^1.3.66",
     "@types/lodash": "^4.14.195",
     "@types/node": "^16",
     "@typescript-eslint/eslint-plugin": "^5",
@@ -31,7 +31,7 @@
     "@vercel/ncc": "^0.36.1",
     "@vladcos/eslint-config": "^0.0.4",
     "@vladcos/prettier-config": "^0.0.8",
-    "@vladcos/projen-base": "../projen-base/",
+    "@vladcos/projen-base": "^0.0.47",
     "@vladcos/tsconfig": "^0.0.3",
     "alias-hq": "^6.2.1",
     "babel-plugin-module-resolver": "^5.0.0",
@@ -46,7 +46,7 @@
     "npm-check-updates": "^16",
     "packemon": "^3.1.1",
     "prettier": "^2.8.8",
-    "projen": "^0.71.97",
+    "projen": "^0.71.105",
     "standard-version": "^9",
     "ts-extras": "^0.11.0",
     "ts-node": "^10.9.1",
@@ -55,7 +55,7 @@
     "type-fest": "^0.21.3",
     "typescript": "^5.1.3",
     "vite-tsconfig-paths": "^4.2.0",
-    "vitest": "^0.32.0"
+    "vitest": "^0.32.2"
   },
   "dependencies": {
     "@actions/core": "^1.10.0",

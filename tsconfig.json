@@ -45,7 +45,8 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "baseUrl": "."
   },
   "include": [
     ".projenrc.js",

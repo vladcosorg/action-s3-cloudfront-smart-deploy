@@ -40,6 +40,10 @@
       "type": "build"
     },
     {
+      "name": "@vladcos/projen-base",
+      "type": "build"
+    },
+    {
       "name": "@vladcos/tsconfig",
       "type": "build"
     },
@@ -75,10 +79,6 @@
     {
       "name": "execa",
       "version": "7",
-      "type": "build"
-    },
-    {
-      "name": "file:../projen-base/",
       "type": "build"
     },
     {
