@@ -1,7 +1,20 @@
 import { GithubAction, RunsUsing } from '@vladcos/projen-base'
 import { TypeScriptModuleResolution } from 'projen/lib/javascript'
 
-const project = new GithubAction({
+const project = class extends GithubAction {
+  override preSynthesize() {
+    super.preSynthesize()
+    this.package.addField('type', 'module')
+
+    this.tryFindObjectFile('.github/workflows/release.yml')?.addOverride(
+      'jobs.release.permissions.id-token',
+      'write',
+    )
+    this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
+  }
+}
+
+const pro = new project({
   defaultReleaseBranch: 'main',
   devDeps: [
     '@vladcos/projen-base',
@@ -41,10 +54,5 @@ const project = new GithubAction({
   ],
   entrypoint: './mjs/index.mjs',
 })
-project.package.addField('type', 'module')
-project.package.addField('files', ['dist/**/*', 'mjs/**/*', 'src/**/*'])
-project
-  .tryFindObjectFile('.github/workflows/release.yml')
-  ?.addOverride('jobs.release.permissions.id-token', 'write')
 
-project.synth()
+pro.synth()

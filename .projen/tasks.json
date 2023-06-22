@@ -78,7 +78,7 @@
       "description": "Only compile",
       "steps": [
         {
-          "exec": "packemon build --loadConfigs"
+          "exec": "packemon build --loadConfigs --no-addFiles"
         }
       ]
     },
