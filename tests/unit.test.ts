@@ -23,23 +23,25 @@ afterEach<TemporaryDirectoryContext>((context) => {
   context.directory.remove()
 })
 
-test<TemporaryDirectoryContext>('the command outputs expected structure', async ({
-  directory,
-}) => {
-  const bucketId = getOrThrow(import.meta.env.VITE_BUCKET_ID)
+test<TemporaryDirectoryContext>(
+  'the command outputs expected structure',
+  async ({ directory }) => {
+    const bucketId = getOrThrow(import.meta.env.VITE_BUCKET_ID)
 
-  directory.file('snapshot/test.json')
-  directory.file('snapshot/inner/test.json')
+    directory.file('snapshot/test.json')
+    directory.file('snapshot/inner/test.json')
 
-  const output = await runS3Sync({
-    fromLocalPath: directory.path(),
-    toS3Uri: `s3://${bucketId}/`,
-    extraArguments: ['--dryrun'],
-  })
-  await expect(
-    removeVariableStringsFromSnapshot(output.stdout),
-  ).toMatchFileSnapshot('./snapshots/s3sync')
-})
+    const output = await runS3Sync({
+      fromLocalPath: directory.path(),
+      toS3Uri: `s3://${bucketId}/`,
+      extraArguments: ['--dryrun'],
+    })
+    await expect(
+      removeVariableStringsFromSnapshot(output.stdout),
+    ).toMatchFileSnapshot('./snapshots/s3sync')
+  },
+  { timeout: 10_000 },
+)
 
 describe('input validation', () => {
   const defaults = {
