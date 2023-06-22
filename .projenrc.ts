@@ -31,7 +31,6 @@ const project = new GithubAction({
 
   releaseWorkflowSetupSteps: [
     {
-      run: 'ls',
       name: 'Configure AWS credentials',
       uses: 'aws-actions/configure-aws-credentials@v2',
       with: {
