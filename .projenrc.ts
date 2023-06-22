@@ -28,7 +28,23 @@ const project = new GithubAction({
       main: 'dist/index.mjs',
     },
   },
+
+  releaseWorkflowSetupSteps: [
+    {
+      run: 'ls',
+      name: 'Configure AWS credentials',
+      uses: 'aws-actions/configure-aws-credentials@v2',
+      with: {
+        'role-to-assume': '${{ vars.AWS_ROLE }}',
+        'aws-region': '${{ vars.AWS_REGION }}',
+      },
+    },
+  ],
 })
 project.package.addField('type', 'module')
+project
+  .tryFindObjectFile('.github/workflows/release.yml')
+  ?.addOverride('jobs.release.permissions.id-token', 'write')
+// console.log(project.release.defaultBranch.workflow.file)
 
 project.synth()
