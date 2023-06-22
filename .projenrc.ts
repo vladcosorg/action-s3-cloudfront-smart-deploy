@@ -41,9 +41,10 @@ const project = new GithubAction({
   ],
 })
 project.package.addField('type', 'module')
+project.package.addField('main', './mjs/index.mjs')
+project.package.addField('files', ['mjs/**/*', 'src/**/*'])
 project
   .tryFindObjectFile('.github/workflows/release.yml')
   ?.addOverride('jobs.release.permissions.id-token', 'write')
-// console.log(project.release.defaultBranch.workflow.file)
 
 project.synth()
