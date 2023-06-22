@@ -39,9 +39,9 @@ const project = new GithubAction({
       },
     },
   ],
+  entrypoint: './mjs/index.mjs',
 })
 project.package.addField('type', 'module')
-project.package.addField('main', './mjs/index.mjs')
 project.package.addField('files', ['mjs/**/*', 'src/**/*'])
 project
   .tryFindObjectFile('.github/workflows/release.yml')
