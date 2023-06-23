@@ -18,6 +18,7 @@ const project = new (class extends GithubAction {
           CI: 'true',
         },
         steps: [
+          { uses: 'actions/checkout@v3' },
           {
             name: 'Configure AWS credentials',
             uses: 'aws-actions/configure-aws-credentials@v2',
