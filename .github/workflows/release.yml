@@ -87,6 +87,12 @@ jobs:
         with:
           role-to-assume: ${{ vars.AWS_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
+      - run: |-
+          mkdir ${{ runner.temp }}/test/
+          touch ${{ runner.temp }}/test/foo.bar
       - uses: ./
         with:
-          directory: .github
+          from-local-path: ${{ runner.temp }}/test
+          to-s3-uri: ${{ vars.AWS_BUCKET }}
+          distribution-id: ${{ vars.AWS_DISTRIBUTION }}
+      - run: aws s3 rm ${{ vars.AWS_BUCKET }} --recursive
