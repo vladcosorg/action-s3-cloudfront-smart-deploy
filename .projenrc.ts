@@ -15,6 +15,7 @@ const project = class extends GithubAction {
 }
 
 const pro = new project({
+  releaseToNpm: false,
   defaultReleaseBranch: 'main',
   devDeps: [
     '@vladcos/projen-base',
