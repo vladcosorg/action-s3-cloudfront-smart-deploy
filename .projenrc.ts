@@ -38,7 +38,7 @@ const project = new (class extends GithubAction {
             uses: './',
             with: {
               'from-local-path': '${{ runner.temp }}/test',
-              'to-s3-uri': '${{ vars.AWS_BUCKET }}',
+              'to-s3-uri': 's3://${{ vars.AWS_BUCKET }}/',
               'distribution-id': '${{ vars.AWS_DISTRIBUTION }}',
             },
           },
