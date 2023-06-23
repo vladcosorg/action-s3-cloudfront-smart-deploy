@@ -95,4 +95,4 @@ jobs:
           from-local-path: ${{ runner.temp }}/test
           to-s3-uri: s3://${{ vars.AWS_BUCKET }}/
           distribution-id: ${{ vars.AWS_DISTRIBUTION }}
-      - run: aws s3 rm ${{ vars.AWS_BUCKET }} --recursive
+      - run: aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive

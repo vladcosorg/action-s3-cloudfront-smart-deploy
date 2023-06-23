@@ -43,7 +43,9 @@ const project = new (class extends GithubAction {
             },
           },
           {
-            run: ['aws s3 rm ${{ vars.AWS_BUCKET }} --recursive'].join('\n'),
+            run: ['aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive'].join(
+              '\n',
+            ),
           },
         ],
       },
