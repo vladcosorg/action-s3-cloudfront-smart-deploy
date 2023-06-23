@@ -10,7 +10,8 @@ const project = new (class extends GithubAction {
     this.release?.addJobs({
       [testJob]: {
         permissions: {
-          contents: JobPermission.READ,
+          contents: JobPermission.WRITE,
+          idToken: JobPermission.WRITE,
         },
         runsOn: ['ubuntu-latest'],
         env: {
