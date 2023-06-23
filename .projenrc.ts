@@ -83,7 +83,7 @@ const project = new (class extends GithubAction {
     },
   },
   actionMetadata: {
-    name: 'Smart Invalidation for S3/Cloudfront - save money and maximize cache hits',
+    name: 'S3/Cloudfront Smart Invalidation -  save money on invalidations and maximize cache hits',
     description:
       'I will analyze your changed files to S3 and minimize the number of Cloudfront invalidations while maximizing cache hits',
     branding: {
