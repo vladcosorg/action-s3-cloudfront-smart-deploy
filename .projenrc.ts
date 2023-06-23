@@ -29,10 +29,21 @@ const project = new (class extends GithubAction {
             },
           },
           {
+            run: [
+              'mkdir ${{ runner.temp }}/test/',
+              'touch ${{ runner.temp }}/test/foo.bar',
+            ].join('\n'),
+          },
+          {
             uses: './',
             with: {
-              directory: '.github',
+              'from-local-path': '${{ runner.temp }}/test',
+              'to-s3-uri': '${{ vars.AWS_BUCKET }}',
+              'distribution-id': '${{ vars.AWS_DISTRIBUTION }}',
             },
+          },
+          {
+            run: ['aws s3 rm ${{ vars.AWS_BUCKET }} --recursive'].join('\n'),
           },
         ],
       },
