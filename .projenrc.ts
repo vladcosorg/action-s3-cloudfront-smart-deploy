@@ -5,6 +5,7 @@ import { TypeScriptModuleResolution } from 'projen/lib/javascript'
 const project = new (class extends GithubAction {
   override preSynthesize() {
     super.preSynthesize()
+    this.addGitIgnore('!/dist/')
     this.package.addField('type', 'module')
     const testJob = 'test_list'
     this.release?.addJobs({
