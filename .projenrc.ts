@@ -1,20 +1,51 @@
 import { GithubAction, RunsUsing } from '@vladcos/projen-base'
+import { JobPermission } from 'projen/lib/github/workflows-model'
 import { TypeScriptModuleResolution } from 'projen/lib/javascript'
 
-const project = class extends GithubAction {
+const project = new (class extends GithubAction {
   override preSynthesize() {
     super.preSynthesize()
     this.package.addField('type', 'module')
+    const testJob = 'test_list'
+    this.release?.addJobs({
+      [testJob]: {
+        permissions: {
+          contents: JobPermission.READ,
+        },
+        runsOn: ['ubuntu-latest'],
+        env: {
+          CI: 'true',
+        },
+        steps: [
+          {
+            name: 'Configure AWS credentials',
+            uses: 'aws-actions/configure-aws-credentials@v2',
+            with: {
+              'role-to-assume': '${{ vars.AWS_ROLE }}',
+              'aws-region': '${{ vars.AWS_REGION }}',
+            },
+          },
+          {
+            uses: './',
+            with: {
+              directory: '.github',
+            },
+          },
+        ],
+      },
+    })
 
-    this.tryFindObjectFile('.github/workflows/release.yml')?.addOverride(
+    const releaseWorkflowFile = this.tryFindObjectFile(
+      '.github/workflows/release.yml',
+    )
+    releaseWorkflowFile?.addOverride(
       'jobs.release.permissions.id-token',
       'write',
     )
+    releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
     this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
   }
-}
-
-const pro = new project({
+})({
   releaseToNpm: false,
   defaultReleaseBranch: 'main',
   devDeps: [
@@ -56,4 +87,4 @@ const pro = new project({
   entrypoint: './mjs/index.mjs',
 })
 
-pro.synth()
+project.synth()
