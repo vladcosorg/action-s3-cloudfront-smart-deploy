@@ -5,18 +5,18 @@ import type { ExecOutput } from '@actions/exec'
 export async function runS3Sync({
   fromLocalPath,
   toS3Uri,
-  extraArguments = [],
+  extraArgumentsS3 = [],
 }: {
   fromLocalPath: string
   toS3Uri: string
-  extraArguments?: string[]
+  extraArgumentsS3?: string[]
 }): Promise<ExecOutput> {
   return getExecOutput('aws', [
     's3',
     'sync',
     fromLocalPath,
     toS3Uri,
-    ...extraArguments,
+    ...extraArgumentsS3,
     '--no-progress',
     '--size-only',
   ])

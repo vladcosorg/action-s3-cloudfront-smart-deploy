@@ -10,12 +10,12 @@ branding:
   icon: refresh-cw
 inputs:
   from-local-path:
-    description: nooo
+    description: Path to sync the files from
     required: true
   to-s3-uri:
     description: No description
     required: true
-  extra-arguments:
+  extra-arguments-s3:
     description: No description
     required: false
   distribution-id:

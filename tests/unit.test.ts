@@ -34,7 +34,7 @@ test<TemporaryDirectoryContext>(
     const output = await runS3Sync({
       fromLocalPath: directory.path(),
       toS3Uri: `s3://${bucketId}/`,
-      extraArguments: ['--dryrun'],
+      extraArgumentsS3: ['--dryrun'],
     })
     await expect(
       removeVariableStringsFromSnapshot(output.stdout),
@@ -47,7 +47,8 @@ describe('input validation', () => {
   const defaults = {
     [getEnvName('fromLocalPath')]: '/tmp',
     [getEnvName('toS3Uri')]: 's3://dawd/',
-    [getEnvName('extraArguments')]: '--one --two',
+    [getEnvName('extraArgumentsS3')]: '--one --two',
+    [getEnvName('extraArgumentsCf')]: '--one --two',
     [getEnvName('invalidationStrategy')]: 'balanced',
     [getEnvName('balancedLimit')]: '6',
     [getEnvName('distributionId')]: 'test',
@@ -65,7 +66,8 @@ describe('input validation', () => {
     expect(parseInput()).toEqual({
       balancedLimit: 6,
       distributionId: 'test',
-      extraArguments: ['--one', '--two'],
+      extraArgumentsS3: ['--one', '--two'],
+      extraArgumentsCf: ['--one', '--two'],
       fromLocalPath: '/tmp',
       invalidationStrategy: 'balanced',
       toS3Uri: 's3://dawd/',
@@ -80,7 +82,10 @@ describe('input validation', () => {
     [
       {
         field: 'fromLocalPath',
-        checks: [['empty', ' ']],
+        checks: [
+          ['empty', ' '],
+          ['non-existent path', '/tmp/does-not-exist'],
+        ],
       },
       {
         field: 'toS3Uri',
@@ -120,7 +125,10 @@ describe('input validation', () => {
   }>([
     {
       field: 'fromLocalPath',
-      checks: [['non-empty string', '/tmp', '/tmp']],
+      checks: [
+        ['non-empty string', '/tmp', '/tmp'],
+        ['another s3', 's3://foobar/ ', 's3://foobar/'],
+      ],
     },
     {
       field: 'toS3Uri',
@@ -129,7 +137,7 @@ describe('input validation', () => {
       ],
     },
     {
-      field: 'extraArguments',
+      field: 'extraArgumentsS3',
       checks: [
         ['one element', 'one', ['one']],
         ['two elements', 'one two', ['one', 'two']],

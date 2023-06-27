@@ -39,7 +39,7 @@ test<TemporaryDirectoryContext>('empty invalid input', async ({
   Object.assign(import.meta.env, {
     [getEnvName('fromLocalPath')]: directory.path(),
     [getEnvName('toS3Uri')]: bucketId,
-    [getEnvName('extraArguments')]: '--dryrun',
+    [getEnvName('extraArgumentsS3')]: '--dryrun',
     [getEnvName('distributionId')]: distributionId,
   })
 

@@ -8,7 +8,8 @@ export async function run(): Promise<void> {
   const {
     fromLocalPath,
     toS3Uri,
-    extraArguments,
+    extraArgumentsS3,
+    extraArgumentsCf,
     balancedLimit,
     invalidationStrategy,
     distributionId,
@@ -21,7 +22,7 @@ export async function run(): Promise<void> {
     toS3Uri,
     '--no-progress',
     '--size-only',
-    ...extraArguments,
+    ...extraArgumentsS3,
   ])
 
   if (!distributionId) {
@@ -46,5 +47,6 @@ export async function run(): Promise<void> {
     ...invalidationCandidates.map((path) =>
       path.includes('*') ? `"${path}"` : path,
     ),
+    ...extraArgumentsCf,
   ])
 }

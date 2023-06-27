@@ -11,18 +11,8 @@ export enum InvalidationStrategy {
   PRECISE = 'precise',
 }
 
-export const inputSchemaValidator = z.object({
-  fromLocalPath: z
-    .string()
-    .trim()
-    .min(1)
-    .describe('nooo')
-    .refine(
-      (value) => fs.existsSync(path.resolve(value)),
-      (value) => ({ message: `The path '${value}' does not exist` }),
-    ),
-  toS3Uri: z.string().trim().min(7).startsWith('s3://').endsWith('/'),
-  extraArguments: z
+function getArgumentValidation() {
+  return z
     .string()
     .trim()
     .optional()
@@ -36,7 +26,25 @@ export const inputSchemaValidator = z.object({
         .map((item) => item.trim())
         .filter((item) => item.length)
     })
-    .pipe(z.string().array()),
+    .pipe(z.string().array())
+}
+
+export const inputSchemaValidator = z.object({
+  fromLocalPath: z.union([
+    z
+      .string()
+      .trim()
+      .min(1)
+      .describe('Path to sync the files from')
+      .refine(
+        (value) => fs.existsSync(path.resolve(value)),
+        (value) => ({ message: `The path '${value}' does not exist` }),
+      ),
+    z.string().trim().min(7).startsWith('s3://').endsWith('/'),
+  ]),
+  toS3Uri: z.string().trim().min(7).startsWith('s3://').endsWith('/'),
+  extraArgumentsS3: getArgumentValidation(),
+  extraArgumentsCf: getArgumentValidation(),
   distributionId: z.string().optional(),
   invalidationStrategy: z
     .nativeEnum(InvalidationStrategy)
