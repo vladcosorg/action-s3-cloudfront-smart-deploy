@@ -62,9 +62,9 @@ const project = new (class extends GithubAction {
     releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
     this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
 
-    releaseWorkflowFile?.addOverride('jobs.release_github.steps', [
-      { uses: 'technote-space/release-github-actions@latest' },
-    ])
+    // releaseWorkflowFile?.addOverride('jobs.release_github.steps', [
+    //   { uses: 'technote-space/release-github-actions@latest' },
+    // ])
 
     const workflow = new GithubWorkflow(GitHub.of(project)!, 'release-action')
     workflow.on({
