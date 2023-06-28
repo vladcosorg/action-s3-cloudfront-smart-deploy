@@ -25268,20 +25268,24 @@ let InvalidationStrategy = /*#__PURE__*/function (InvalidationStrategy) {
   InvalidationStrategy["PRECISE"] = "precise";
   return InvalidationStrategy;
 }({});
-const inputSchemaValidator = z.object({
-  fromLocalPath: z.string().trim().min(1).describe('nooo').refine(value => external_node_fs_namespaceObject.existsSync(external_node_path_namespaceObject.resolve(value)), value => ({
-    message: `The path '${value}' does not exist`
-  })),
-  toS3Uri: z.string().trim().min(7).startsWith('s3://').endsWith('/'),
-  extraArguments: z.string().trim().optional().transform(value => {
+function getArgumentValidation() {
+  return z.string().trim().optional().transform(value => {
     if (!value || value.length === 0) {
       return [];
     }
     return value.split(' ').map(item => item.trim()).filter(item => item.length);
-  }).pipe(z.string().array()),
-  distributionId: z.string().optional(),
-  invalidationStrategy: z.nativeEnum(InvalidationStrategy).default(InvalidationStrategy.BALANCED).describe(' The balanced strategy will attempt to use the maximize-precision approach unless there are [limit] or more targets. \n' + 'In that case it will switch to the minimize-invalidations strategy.'),
-  balancedLimit: z.coerce.number().int().positive().default(5)
+  }).pipe(z.string().array());
+}
+const inputSchemaValidator = z.object({
+  source: z.union([z.string().trim().min(1).describe('Path to sync the files from').refine(value => external_node_fs_namespaceObject.existsSync(external_node_path_namespaceObject.resolve(value)), value => ({
+    message: `The path '${value}' does not exist`
+  })), z.string().trim().min(7).startsWith('s3://').endsWith('/')]),
+  target: z.string().trim().min(7).startsWith('s3://').endsWith('/').describe('Target s3 bucket to sync to'),
+  s3args: getArgumentValidation().describe('Additional arguments from https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html'),
+  cfargs: getArgumentValidation().describe('Additional arguments from https://docs.aws.amazon.com/cli/latest/reference/cloudfront/create-invalidation.html'),
+  distribution: z.string().optional().describe('Cloudfront distribution ID'),
+  invalidationStrategy: z.nativeEnum(InvalidationStrategy).default(InvalidationStrategy.BALANCED).describe(' Available values: `BALANCED`, `PRECISE`, `FRUGAL`'),
+  balancedLimit: z.coerce.number().int().positive().default(5).describe('Maximum amount of invalidation requests when using `BALANCED` strategy')
 });
 // eslint-disable-next-line import/no-default-export
 const schema = () => inputSchemaValidator;
@@ -25437,15 +25441,16 @@ function pickStrategy(input, {
 
 async function run() {
   const _parseInput = parseInput(),
-    fromLocalPath = _parseInput.fromLocalPath,
-    toS3Uri = _parseInput.toS3Uri,
-    extraArguments = _parseInput.extraArguments,
+    source = _parseInput.source,
+    target = _parseInput.target,
+    s3args = _parseInput.s3args,
+    cfargs = _parseInput.cfargs,
     balancedLimit = _parseInput.balancedLimit,
     invalidationStrategy = _parseInput.invalidationStrategy,
-    distributionId = _parseInput.distributionId;
+    distribution = _parseInput.distribution;
   core.setCommandEcho(true);
-  const output = await (0,exec.getExecOutput)('aws', ['s3', 'sync', fromLocalPath, toS3Uri, '--no-progress', '--size-only', ...extraArguments]);
-  if (!distributionId) {
+  const output = await (0,exec.getExecOutput)('aws', ['s3', 'sync', source, target, '--no-progress', '--size-only', ...s3args]);
+  if (!distribution) {
     return;
   }
   const invalidationCandidates = pickStrategy(output.stdout, {
@@ -25455,7 +25460,7 @@ async function run() {
   if (invalidationCandidates.length === 0) {
     return;
   }
-  await (0,exec.getExecOutput)('aws', ['cloudfront', 'create-invalidation', '--distribution-id', distributionId, '--paths', ...invalidationCandidates.map(path => path.includes('*') ? `"${path}"` : path)]);
+  await (0,exec.getExecOutput)('aws', ['cloudfront', 'create-invalidation', '--distribution-id', distribution, '--paths', ...invalidationCandidates.map(path => path.includes('*') ? `"${path}"` : path), ...cfargs]);
 }
 
 //# sourceMappingURL=runner.mjs.map
