@@ -1,5 +1,5 @@
 <h2 style="font-weight: normal" align="center">
-    <img alt="linkertinker" src="./.github/logo.svg" width="150" /><br>
+    <img alt="linkertinker" src="./.github/logoc.svg" width="150" /><br>
   S3/Cloudfront <b style="color: #A067FF">Smart</b> Invalidation
 </h2>
 
