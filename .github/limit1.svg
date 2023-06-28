@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 429 189.45">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        font-weight: 700;
+      }
+
+      .cls-1, .cls-2, .cls-4 {
+        font-family: Iosevka-Fixed-SS10-Bold, 'Iosevka Fixed SS10';
+      }
+
+      .cls-1, .cls-3, .cls-5, .cls-6, .cls-4 {
+        font-size: 12px;
+      }
+
+      .cls-2, .cls-7, .cls-8, .cls-4 {
+        fill: #f07167;
+      }
+
+      .cls-9, .cls-10, .cls-3, .cls-5 {
+        fill: #fff;
+      }
+
+      .cls-9, .cls-5 {
+        font-family: Iosevka-Fixed-SS10, 'Iosevka Fixed SS10';
+      }
+
+      .cls-11 {
+        fill: #6a4c93;
+      }
+
+      .cls-12 {
+        fill: #299d8f;
+      }
+
+      .cls-13 {
+        fill: #31343e;
+      }
+
+      .cls-3 {
+        font-family: Iosevka-SS10-Bold, 'Iosevka SS10';
+      }
+
+      .cls-14 {
+        fill: #1982c4;
+        font-family: MyriadPro-Regular, 'Myriad Pro';
+        font-size: 130px;
+      }
+
+      .cls-8 {
+        letter-spacing: -.06em;
+      }
+    </style>
+  </defs>
+  <g id="Layer_4" data-name="Layer 4">
+    <rect class="cls-12" x="253" y="105.06" width="176" height="28"/>
+    <rect class="cls-13" x="1" y="40.06" width="176" height="28"/>
+    <rect class="cls-13" x="1" y="120.06" width="176" height="28"/>
+    <rect class="cls-13" x="1" y="161.06" width="176" height="28"/>
+    <rect class="cls-13" y="79.06" width="176" height="28"/>
+    <rect class="cls-11" x="3" y=".06" width="106" height="24"/>
+  </g>
+  <g id="Layer_2-2" data-name="Layer 2">
+    <text class="cls-3" transform="translate(5.48 17.21)"><tspan x="0" y="0">balancedLimit: 1</tspan></text>
+    <text class="cls-1" transform="translate(.32 58.36)"><tspan class="cls-7" x="0" y="0"> </tspan><tspan class="cls-10" x="6" y="0">/</tspan><tspan class="cls-7" x="12" y="0">home/bar/deep/path</tspan><tspan class="cls-8" x="120" y="0">/</tspan><tspan class="cls-7" x="125.28" y="0">foo.png</tspan></text>
+    <text class="cls-5" transform="translate(252.72 124.51)"><tspan x="0" y="0" xml:space="preserve"> /*</tspan></text>
+    <text class="cls-6" transform="translate(.25 97.99)"><tspan class="cls-9" x="0" y="0" xml:space="preserve"> /</tspan><tspan class="cls-2" x="12" y="0">home/bar/deep/bar.png</tspan></text>
+    <text class="cls-6" transform="translate(.73 138.88)"><tspan class="cls-9" x="0" y="0" xml:space="preserve"> /</tspan><tspan class="cls-2" x="12" y="0">home/bar/five.png</tspan></text>
+    <text class="cls-6" transform="translate(.73 179.98)"><tspan class="cls-9" x="0" y="0" xml:space="preserve"> /</tspan><tspan class="cls-2" x="12" y="0">five.png</tspan></text>
+    <text class="cls-14" transform="translate(189.18 156.95)"><tspan x="0" y="0">}</tspan></text>
+    <text class="cls-4" transform="translate(118.06 17.42)"><tspan x="0" y="0">Do not do this!</tspan></text>
+  </g>
+</svg>

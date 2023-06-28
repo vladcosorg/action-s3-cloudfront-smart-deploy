@@ -9,25 +9,26 @@ branding:
   color: blue
   icon: refresh-cw
 inputs:
-  from-local-path:
-    description: Path to sync the files from
-    required: true
-  to-s3-uri:
+  source:
     description: No description
     required: true
-  extra-arguments-s3:
-    description: No description
+  target:
+    description: Target s3 bucket to sync to
+    required: true
+  s3args:
+    description: Additional arguments from https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html
     required: false
-  distribution-id:
-    description: No description
+  cfargs:
+    description: Additional arguments from https://docs.aws.amazon.com/cli/latest/reference/cloudfront/create-invalidation.html
+    required: false
+  distribution:
+    description: Cloudfront distribution ID
     required: false
   invalidation-strategy:
-    description: |2-
-       The balanced strategy will attempt to use the maximize-precision approach unless there are [limit] or more targets. 
-      In that case it will switch to the minimize-invalidations strategy.
+    description: " Available values: `BALANCED`, `PRECISE`, `FRUGAL`"
     required: false
     default: balanced
   balanced-limit:
-    description: No description
+    description: Maximum amount of invalidation requests when using `BALANCED` strategy
     required: false
     default: 5

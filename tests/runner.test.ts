@@ -25,9 +25,9 @@ vi.mock('@actions/exec', async () => {
 
 test('empty invalid input', async () => {
   Object.assign(import.meta.env, {
-    [getEnvName('fromLocalPath')]: '/tmp',
-    [getEnvName('toS3Uri')]: 's3://dawd/',
-    [getEnvName('distributionId')]: 'foobar',
+    [getEnvName('source')]: '/tmp',
+    [getEnvName('target')]: 's3://dawd/',
+    [getEnvName('distribution')]: 'foobar',
   })
 
   await run()
@@ -44,7 +44,7 @@ test('empty invalid input', async () => {
     'cloudfront',
     'create-invalidation',
     '--distribution-id',
-    import.meta.env[getEnvName('distributionId')],
+    import.meta.env[getEnvName('distribution')],
     '--paths',
     '/dir1/dir2/dir3/file2',
     '/dir1/dir2/dir3/file1',

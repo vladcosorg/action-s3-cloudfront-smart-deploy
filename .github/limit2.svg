@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 415 226.67">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 60.83px;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        font-family: Iosevka-Fixed-SS10, 'Iosevka Fixed SS10';
+      }
+
+      .cls-1, .cls-4 {
+        fill: #1982c4;
+      }
+
+      .cls-5, .cls-6, .cls-7 {
+        font-weight: 700;
+      }
+
+      .cls-5, .cls-7 {
+        fill: #f07167;
+        font-family: Iosevka-Fixed-SS10-Bold, 'Iosevka Fixed SS10';
+      }
+
+      .cls-2, .cls-6, .cls-3 {
+        fill: #fff;
+      }
+
+      .cls-8 {
+        fill: #6a4c93;
+      }
+
+      .cls-9 {
+        fill: #299d8f;
+      }
+
+      .cls-10 {
+        fill: #31343e;
+      }
+
+      .cls-11, .cls-7 {
+        letter-spacing: -.06em;
+      }
+
+      .cls-6 {
+        font-family: Iosevka-SS10-Bold, 'Iosevka SS10';
+      }
+
+      .cls-6, .cls-3, .cls-12 {
+        font-size: 12px;
+      }
+
+      .cls-4 {
+        font-family: MyriadPro-Regular, 'Myriad Pro';
+        font-size: 90px;
+      }
+
+      .cls-13 {
+        fill: none;
+        stroke: #8ac926;
+        stroke-miterlimit: 10;
+        stroke-width: .5px;
+      }
+    </style>
+  </defs>
+  <g id="Layer_4" data-name="Layer 4">
+    <rect class="cls-9" x="239" y="81" width="176" height="28"/>
+    <rect class="cls-9" x="239" y="163" width="176" height="28"/>
+    <rect class="cls-10" x="1" y="40" width="176" height="28"/>
+    <rect class="cls-10" x="1" y="120" width="176" height="28"/>
+    <rect class="cls-10" x="1" y="161" width="176" height="28"/>
+    <rect class="cls-10" y="79" width="176" height="28"/>
+    <rect class="cls-8" width="106" height="24"/>
+  </g>
+  <g id="Layer_2-2" data-name="Layer 2">
+    <text class="cls-6" transform="translate(5.75 17.62)"><tspan x="0" y="0">balancedLimit: 2</tspan></text>
+    <text class="cls-12" transform="translate(.59 58.78)"><tspan class="cls-2" x="0" y="0" xml:space="preserve"> /home/bar/</tspan><tspan class="cls-5" x="66" y="0">deep/path</tspan><tspan class="cls-7" x="120" y="0">/</tspan><tspan class="cls-5" x="125.28" y="0">foo.png</tspan></text>
+    <text class="cls-3" transform="translate(238.99 99.93)"><tspan x="0" y="0" xml:space="preserve"> /home/bar</tspan><tspan class="cls-11" x="60" y="0">/</tspan><tspan x="65.28" y="0">*</tspan></text>
+    <text class="cls-12" transform="translate(.52 98.4)"><tspan class="cls-2" x="0" y="0" xml:space="preserve"> /home/bar/</tspan><tspan class="cls-5" x="66" y="0">deep/bar.png</tspan></text>
+    <text class="cls-12" transform="translate(1 139.29)"><tspan class="cls-2" x="0" y="0" xml:space="preserve"> /home/bar/</tspan><tspan class="cls-5" x="66" y="0">five.png</tspan></text>
+    <text class="cls-3" transform="translate(1 180.4)"><tspan x="0" y="0" xml:space="preserve"> /five.png</tspan></text>
+    <text class="cls-3" transform="translate(238.66 182.63)"><tspan x="0" y="0" xml:space="preserve"> /five.png</tspan></text>
+    <polyline class="cls-13" points="9.38 64.58 9.38 66.49 62 66.49 62 64.58"/>
+    <text class="cls-1" transform="translate(187.95 197.35)"><tspan x="0" y="0">→</tspan></text>
+    <polyline class="cls-13" points="9.31 101.43 9.31 103.35 61.92 103.35 61.92 101.43"/>
+    <polyline class="cls-13" points="9.14 142.71 9.14 144.63 61.76 144.63 61.76 142.71"/>
+    <text class="cls-4" transform="translate(195.44 120.36)"><tspan x="0" y="0">}</tspan></text>
+  </g>
+</svg>

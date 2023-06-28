@@ -30,7 +30,7 @@ function getArgumentValidation() {
 }
 
 export const inputSchemaValidator = z.object({
-  fromLocalPath: z.union([
+  source: z.union([
     z
       .string()
       .trim()
@@ -42,18 +42,32 @@ export const inputSchemaValidator = z.object({
       ),
     z.string().trim().min(7).startsWith('s3://').endsWith('/'),
   ]),
-  toS3Uri: z.string().trim().min(7).startsWith('s3://').endsWith('/'),
-  extraArgumentsS3: getArgumentValidation(),
-  extraArgumentsCf: getArgumentValidation(),
-  distributionId: z.string().optional(),
+  target: z
+    .string()
+    .trim()
+    .min(7)
+    .startsWith('s3://')
+    .endsWith('/')
+    .describe('Target s3 bucket to sync to'),
+  s3args: getArgumentValidation().describe(
+    'Additional arguments from https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html',
+  ),
+  cfargs: getArgumentValidation().describe(
+    'Additional arguments from https://docs.aws.amazon.com/cli/latest/reference/cloudfront/create-invalidation.html',
+  ),
+  distribution: z.string().optional().describe('Cloudfront distribution ID'),
   invalidationStrategy: z
     .nativeEnum(InvalidationStrategy)
     .default(InvalidationStrategy.BALANCED)
+    .describe(' Available values: `BALANCED`, `PRECISE`, `FRUGAL`'),
+  balancedLimit: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(5)
     .describe(
-      ' The balanced strategy will attempt to use the maximize-precision approach unless there are [limit] or more targets. \n' +
-        'In that case it will switch to the minimize-invalidations strategy.',
+      'Maximum amount of invalidation requests when using `BALANCED` strategy',
     ),
-  balancedLimit: z.coerce.number().int().positive().default(5),
 })
 
 export type InputSchema = z.infer<typeof inputSchemaValidator>

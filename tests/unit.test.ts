@@ -32,9 +32,9 @@ test<TemporaryDirectoryContext>(
     directory.file('snapshot/inner/test.json')
 
     const output = await runS3Sync({
-      fromLocalPath: directory.path(),
-      toS3Uri: `s3://${bucketId}/`,
-      extraArgumentsS3: ['--dryrun'],
+      source: directory.path(),
+      target: `s3://${bucketId}/`,
+      s3args: ['--dryrun'],
     })
     await expect(
       removeVariableStringsFromSnapshot(output.stdout),
@@ -45,13 +45,13 @@ test<TemporaryDirectoryContext>(
 
 describe('input validation', () => {
   const defaults = {
-    [getEnvName('fromLocalPath')]: '/tmp',
-    [getEnvName('toS3Uri')]: 's3://dawd/',
-    [getEnvName('extraArgumentsS3')]: '--one --two',
-    [getEnvName('extraArgumentsCf')]: '--one --two',
+    [getEnvName('source')]: '/tmp',
+    [getEnvName('target')]: 's3://dawd/',
+    [getEnvName('s3args')]: '--one --two',
+    [getEnvName('cfargs')]: '--one --two',
     [getEnvName('invalidationStrategy')]: 'balanced',
     [getEnvName('balancedLimit')]: '6',
-    [getEnvName('distributionId')]: 'test',
+    [getEnvName('distribution')]: 'test',
   }
 
   beforeEach(() => {
@@ -65,12 +65,12 @@ describe('input validation', () => {
     Object.assign(import.meta.env, defaults)
     expect(parseInput()).toEqual({
       balancedLimit: 6,
-      distributionId: 'test',
-      extraArgumentsS3: ['--one', '--two'],
-      extraArgumentsCf: ['--one', '--two'],
-      fromLocalPath: '/tmp',
+      distribution: 'test',
+      s3args: ['--one', '--two'],
+      cfargs: ['--one', '--two'],
+      source: '/tmp',
       invalidationStrategy: 'balanced',
-      toS3Uri: 's3://dawd/',
+      target: 's3://dawd/',
     })
   })
 
@@ -81,14 +81,14 @@ describe('input validation', () => {
   describe.each<{ field: keyof InputSchema; checks: Array<[string, unknown]> }>(
     [
       {
-        field: 'fromLocalPath',
+        field: 'source',
         checks: [
           ['empty', ' '],
           ['non-existent path', '/tmp/does-not-exist'],
         ],
       },
       {
-        field: 'toS3Uri',
+        field: 'target',
         checks: [
           ['empty', ' '],
           ['invalid prefix', 's4://'],
@@ -124,20 +124,20 @@ describe('input validation', () => {
     checks: Array<[string, unknown, unknown]>
   }>([
     {
-      field: 'fromLocalPath',
+      field: 'source',
       checks: [
         ['non-empty string', '/tmp', '/tmp'],
         ['another s3', 's3://foobar/ ', 's3://foobar/'],
       ],
     },
     {
-      field: 'toS3Uri',
+      field: 'target',
       checks: [
         ['string with prefix and suffix', ' s3://foobar/ ', 's3://foobar/'],
       ],
     },
     {
-      field: 'extraArgumentsS3',
+      field: 's3args',
       checks: [
         ['one element', 'one', ['one']],
         ['two elements', 'one two', ['one', 'two']],
@@ -146,7 +146,7 @@ describe('input validation', () => {
       ],
     },
     {
-      field: 'distributionId',
+      field: 'distribution',
       checks: [['empty string', ' ', undefined]],
     },
     {

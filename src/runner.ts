@@ -6,26 +6,26 @@ import { pickStrategy } from '@/src/strategy-picker'
 
 export async function run(): Promise<void> {
   const {
-    fromLocalPath,
-    toS3Uri,
-    extraArgumentsS3,
-    extraArgumentsCf,
+    source,
+    target,
+    s3args,
+    cfargs,
     balancedLimit,
     invalidationStrategy,
-    distributionId,
+    distribution,
   } = parseInput()
   core.setCommandEcho(true)
   const output = await getExecOutput('aws', [
     's3',
     'sync',
-    fromLocalPath,
-    toS3Uri,
+    source,
+    target,
     '--no-progress',
     '--size-only',
-    ...extraArgumentsS3,
+    ...s3args,
   ])
 
-  if (!distributionId) {
+  if (!distribution) {
     return
   }
 
@@ -42,11 +42,11 @@ export async function run(): Promise<void> {
     'cloudfront',
     'create-invalidation',
     '--distribution-id',
-    distributionId,
+    distribution,
     '--paths',
     ...invalidationCandidates.map((path) =>
       path.includes('*') ? `"${path}"` : path,
     ),
-    ...extraArgumentsCf,
+    ...cfargs,
   ])
 }

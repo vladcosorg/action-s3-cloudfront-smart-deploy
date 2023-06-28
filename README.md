@@ -1,22 +1,22 @@
 <h2 style="font-weight: normal" align="center">
     <img alt="linkertinker" src="./.github/logo.svg" width="150" /><br>
-  S3/Cloudfront <b style="color: #A067FF">Smart Invalidation</b>
+  S3/Cloudfront <b style="color: #A067FF">Smart</b> Invalidation
 </h2>
 
-**This action provides a smart invalidation algorythm which can be as precise and as economical as you want it to be.**
+**AWS Cloudfront invalidation requests cost 💰 once you're past the free limit (1000 / account). Issuing wildcard `/_` invalidations is
+not an option because it causes total cache revalidation and negatively impacts performance.
+This action provides a smart invalidation algorythm which just works. It issues as few invalidation requests as possible
+whilst preserving user cache and preventing useless cache drops.**
 
-By default the action prioritizes issueing as many precise invalidations as possible (withing set limits). 
+By default the action prioritizes issueing as many precise invalidations as possible (withing set limits).
 If this is not possible, it falls back to a hybrid mode which would issue a mix of targeted invalidations and wildcard invalidations.
-And finally, if there are too many invalidations, it falls back to wildcard approach, **BUT** the wilcards are 
+And finally, if there are too many invalidations, it falls back to wildcard approach, **BUT** the wilcards are
 as specific as possible, so that the consumers of the app would redownload as little as possible.
-
 
 <!-- toc -->
 
 - [Usage](#usage)
-    + [Task definition file](#task-definition-file)
-    + [Task definition container image values](#task-definition-container-image-values)
-- [Credentials and Region](#credentials-and-region)
+- [Configuration](#configuration)
 - [Permissions](#permissions)
 - [AWS CodeDeploy Support](#aws-codedeploy-support)
 - [Troubleshooting](#troubleshooting)
@@ -24,33 +24,71 @@ as specific as possible, so that the consumers of the app would redownload as li
 - [Security Disclosures](#security-disclosures)
 
 <!-- tocstop -->
+
 ## Usage
+
 ```yaml
 - name: Upload changes to S3 and issue Cloudfront invalidations
   uses: vladcosorg/action-s3-cloudfront-smart-deploy@master
   with:
-    from-local-path: arn:aws:iam::111111111111:role/my-github-actions-role-test
-    aws-region: us-east-1
+    source: local/path/to/dir
+    target: s3://my-bucket-name/
+    distribution: DOAJN11MNDAND
 ```
 
+## Configuration
 
-### Configuration
+| Key                     | Description                                                                                                          | Required | Default    | Value Type                          | Example                                                                  |
+|-------------------------|----------------------------------------------------------------------------------------------------------------------|----------|------------|-------------------------------------|--------------------------------------------------------------------------|
+| `source`                | Path to sync the files **from**                                                                                      | Yes ❗    | N/A        | `path` or `S3 bucket URI`           | `relative/path/to/dir` <br> `/absolute/path` <br> `s3://my-bucket-name/` |
+| `target`                | Target s3 bucket to sync **to**                                                                                      | Yes ❗    | N/A        | `S3 bucket URI`                     | `s3://my-bucket-name/`                                                   |
+| `s3args`                | Additional arguments from <br/> https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html                        | No       | N/A        | `string`                            | `--exact-timestamps --delete`                                            |
+| `distribution`          | Cloudfront distribution ID.                                                                                          | No       | N/A        | `string`                            | `DOAJN11MNDAND`                                                          |
+| `cfargs`                | Additional arguments from <br/> https://docs.aws.amazon.com/cli/latest/reference/cloudfront/create-invalidation.html | No       | N/A        | `string`                            | `--debug`                                                                |
+| `invalidation-strategy` | Invalidation strategy [See description here](#invalidation-strategies)                                               | No       | `BALANCED` | `BALANCED` or `PRECISE` or `FRUGAL` | `FRUGAL`                                                                 |
+| `balanced-limit`        | Maximum amount of invalidation requests when using `BALANCED` strategy                                               | No       | `5`        | `positive number` or `Ininity`      | 10                                                                       |
 
-| Key                     | Description                                                                                                     | Required | Default   | Value Type |
-|-------------------------|-----------------------------------------------------------------------------------------------------------------|---------|-----------|------------|
-| `source`                | Path to sync the files **from**                                                                                 | Yes ❗   | N/A       |
-| `target`                | Target s3 bucket to sync **to**                                                                                 | Yes ❗   | N/A       |
-| `extra-arguments-s3`    | Additional arguments from https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html                         | No      | N/A       |
-| `distribution-id`       | Cloudfront distribution ID                                                                                      | No      | N/A       |
-| `extra-arguments-cf`    | Additional arguments from https://docs.aws.amazon.com/cli/latest/reference/cloudfront/create-invalidation.html  | No      | N/A       |
-| `invalidation-strategy` | Available values: `BALANCED`, `PRECISE`, `FRUGAL`. [See description here](#invalidation-strategies)             | No      | `BALANCED` |
-| `balanced-limit`        | Path to sync the files **from**                                                                                 | No      | `5`       |
 ### Invalidation strategies
 
+### `BALANCED` ✅ recommended
 
+
+This approach is the primary feature of this action. It works by creating the most optimal invalidation batch request
+based on the `balanced-limit` value. For example if the value of `balanced-limit` is set to `5`, then it will issue up
+to `5` invalidation requests.  The action will never exceed this value.
+
+If the `balanced-limit` value is too low to accomodate all precise invalidations, then it will resort to the
+wildcard approach, partially or completely.
+
+
+The generated wildcards will try to minimize the number of invalidated files a minuumum by narrowing its scope.
+
+<div  align="center">
+<img alt="linkertinker" src="./.github/limit3.svg" width="500" />
+<img alt="linkertinker" src="./.github/limit2.svg" width="500" />
+<img alt="linkertinker" src="./.github/limit1.svg" width="500" />
+</div>
+
+
+### `FRUGAL`
+
+It's a shortcut to the `balanced-limit` set to `1`. It means that the action would always issues at most
+1 invalidation request that is going to contain a scoped wildcard if you have more than 1 file that needs
+to be invalidated.
+
+🟠 **Attention**: This option, whilst very economical towards your AWS invalidation quota, would affect many
+unrelated paths. Use with caution.
+
+### `PRECISE`
+
+It's a shortcut to the `balanced-limit` set to `Infinity`. It means that the action would always issue precise
+invalidation requests, potentially
+
+🧨 **Warning**: This option could potentially cost you a significant amount of money, because it will issue
+1 invalidation request per 1 changed files. If you have lots of changed files that are frequently deployed to S3, think
+again before using this option.
 
 ## Full example
-
 
 ```yaml
 jobs:
@@ -69,28 +107,24 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::111111111111:role/my-github-actions-role-test
           aws-region: us-east-1
-      - name: Copy files to the test website with the AWS CLI
-        run: |
-          aws s3 sync . s3://my-s3-test-website-bucket
-      - name: Configure AWS credentials from Production account
-        uses: aws-actions/configure-aws-credentials@v2
+      - name: Upload changes to S3 and issue Cloudfront invalidations
+        uses: vladcosorg/action-s3-cloudfront-smart-deploy@master
         with:
-          role-to-assume: arn:aws:iam::222222222222:role/my-github-actions-role-prod
-          aws-region: us-west-2
-      - name: Copy files to the production website with the AWS CLI
-        run: |
-          aws s3 sync . s3://my-s3-prod-website-bucket
+          source: local/path/to/dir
+          target: s3://my-bucket-name/
+          distribution: DOAJN11MNDAND
 ```
-
 
 ## Motivation
 
 The available actions are using a simple yet inneficient approach that invalidates the changes using a precise
-1 file -> 1 invalidation request approach, which potentiall can result in a quite large monthly bill, provided that 
+1 file -> 1 invalidation request approach, which potentiall can result in a quite large monthly bill, provided that
 your project is updated frequently and got a lot of files (exactly the case at my company).
-Another approach is to issue general, root invalidations like `/*` which would cause the consumers of your app 
+Another approach is to issue general, root invalidations like `/*` which would cause the consumers of your app
 to redownload the assets which did not actually change.
 
 This action features a `BALANCED` approach which is as precise and as economical as you want it to be.
+
 ## License
+
 This project is distributed under the [MIT license](LICENSE.md).
