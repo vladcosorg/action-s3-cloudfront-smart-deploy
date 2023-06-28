@@ -64,9 +64,9 @@ wildcard approach, partially or completely.
 The generated wildcards will try to minimize the number of invalidated files a minuumum by narrowing its scope.
 
 <div  align="center">
-<img alt="linkertinker" src="./.github/limit3.svg" width="500" />
-<img alt="linkertinker" src="./.github/limit2.svg" width="500" />
-<img alt="linkertinker" src="./.github/limit1.svg" width="500" />
+<img alt="linkertinker" src="./.github/limit3c.svg" width="500" />
+<img alt="linkertinker" src="./.github/limit2c.svg" width="500" />
+<img alt="linkertinker" src="./.github/limit1c.svg" width="500" />
 </div>
 
 
