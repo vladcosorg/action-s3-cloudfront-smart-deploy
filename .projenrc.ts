@@ -1,4 +1,5 @@
 import { GithubAction, RunsUsing } from '@vladcos/projen-base'
+import { GitHub, GithubWorkflow } from 'projen/lib/github'
 import { JobPermission } from 'projen/lib/github/workflows-model'
 import { TypeScriptModuleResolution } from 'projen/lib/javascript'
 
@@ -60,6 +61,20 @@ const project = new (class extends GithubAction {
     )
     releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
     this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
+
+    releaseWorkflowFile?.addOverride('jobs.release_github.steps', [
+      { uses: 'technote-space/release-github-actions@latest' },
+    ])
+
+    const workflow = new GithubWorkflow(GitHub.of(project)!, 'release-action')
+    workflow.on({
+      push: { tags: ['v*'] },
+    })
+    workflow.addJob('release', {
+      runsOn: ['ubuntu-latest'],
+      permissions: {},
+      steps: [{ uses: 'technote-space/release-github-actions@v8' }],
+    })
   }
 })({
   releaseToNpm: false,
@@ -82,6 +97,7 @@ const project = new (class extends GithubAction {
       moduleResolution: TypeScriptModuleResolution.BUNDLER,
     },
   },
+  githubRelease: false,
   actionMetadata: {
     name: 'S3/Cloudfront Smart Invalidation -  save money on invalidations and maximize cache hits',
     description:
@@ -96,7 +112,7 @@ const project = new (class extends GithubAction {
       main: 'dist/index.mjs',
     },
   },
-
+  // githubRelease: false,
   releaseWorkflowSetupSteps: [
     {
       name: 'Configure AWS credentials',

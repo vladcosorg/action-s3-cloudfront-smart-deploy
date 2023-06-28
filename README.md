@@ -1,27 +1,24 @@
 <h2 style="font-weight: normal" align="center">
-    <img alt="linkertinker" src="./.github/logoc.svg" width="150" /><br>
-  S3/Cloudfront <b style="color: #A067FF">Smart</b> Invalidation
+   <img alt="linkertinker" src="./.github/logoc.svg" width="150" /><br>
+ S3/Cloudfront <b style="color: #A067FF">Smart</b> Invalidation
 </h2>
 
 **AWS Cloudfront invalidation requests cost 💰 once you're past the free limit (1000 / account). Issuing wildcard `/_` invalidations is
 not an option because it causes total cache revalidation and negatively impacts performance.
-This action provides a smart invalidation algorythm which just works. It issues as few invalidation requests as possible
+This action provides a smart invalidation algorithm which just works. It issues as few invalidation requests as possible
 whilst preserving user cache and preventing useless cache drops.**
-
-By default the action prioritizes issueing as many precise invalidations as possible (withing set limits).
-If this is not possible, it falls back to a hybrid mode which would issue a mix of targeted invalidations and wildcard invalidations.
-And finally, if there are too many invalidations, it falls back to wildcard approach, **BUT** the wilcards are
-as specific as possible, so that the consumers of the app would redownload as little as possible.
 
 <!-- toc -->
 
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Permissions](#permissions)
-- [AWS CodeDeploy Support](#aws-codedeploy-support)
-- [Troubleshooting](#troubleshooting)
-- [License Summary](#license-summary)
-- [Security Disclosures](#security-disclosures)
+- [Invalidation strategies](#invalidation-strategies)
+  - [Balanced](#balanced--recommended)
+  - [Frugal](#frugal)
+  - [Precise](#precise)
+- [Motivation](#motivation)
+- [Full example](#full-example)
+- [License](#license)
 
 <!-- tocstop -->
 
@@ -29,19 +26,19 @@ as specific as possible, so that the consumers of the app would redownload as li
 
 ```yaml
 - name: Upload changes to S3 and issue Cloudfront invalidations
-  uses: vladcosorg/action-s3-cloudfront-smart-deploy@master
-  with:
-    source: local/path/to/dir
-    target: s3://my-bucket-name/
-    distribution: DOAJN11MNDAND
+ uses: vladcosorg/action-s3-cloudfront-smart-deploy@master
+ with:
+   source: local/path/to/dir
+   target: s3://my-bucket-name/
+   distribution: DOAJN11MNDAND
 ```
 
 ## Configuration
 
 | Key                     | Description                                                                                      | Required | Default    | Value Type                          | Example                                                                  |
-|-------------------------|--------------------------------------------------------------------------------------------------|----------|------------|-------------------------------------|--------------------------------------------------------------------------|
-| `source`                | Path to sync the files **from**                                                                  | Yes ❗    | N/A        | `path` or `S3 bucket URI`           | `relative/path/to/dir` <br> `/absolute/path` <br> `s3://my-bucket-name/` |
-| `target`                | Target s3 bucket to sync **to**                                                                  | Yes ❗    | N/A        | `S3 bucket URI`                     | `s3://my-bucket-name/`                                                   |
+| ----------------------- | ------------------------------------------------------------------------------------------------ | -------- | ---------- | ----------------------------------- | ------------------------------------------------------------------------ |
+| `source`                | Path to sync the files **from**                                                                  | Yes ❗   | N/A        | `path` or `S3 bucket URI`           | `relative/path/to/dir` <br> `/absolute/path` <br> `s3://my-bucket-name/` |
+| `target`                | Target s3 bucket to sync **to**                                                                  | Yes ❗   | N/A        | `S3 bucket URI`                     | `s3://my-bucket-name/`                                                   |
 | `s3args`                | [See here](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html)                        | No       | N/A        | `string`                            | `--exact-timestamps --delete`                                            |
 | `distribution`          | Cloudfront distribution ID.                                                                      | No       | N/A        | `string`                            | `DOAJN11MNDAND`                                                          |
 | `cfargs`                | [See here](https://docs.aws.amazon.com/cli/latest/reference/cloudfront/create-invalidation.html) | No       | N/A        | `string`                            | `--debug`                                                                |
@@ -52,23 +49,24 @@ as specific as possible, so that the consumers of the app would redownload as li
 
 ### `BALANCED` ✅ recommended
 
+This strategy prioritizes issuing as many precise invalidations as possible (within set limits).
+If this is not possible, it falls back to a hybrid mode which would issue a mix of targeted invalidations and wildcard invalidations.
+And finally, if there are too many invalidations, it falls back to wildcard approach, **BUT** the wildcards are
+as specific as possible, so that the consumers of the app would redownload as little as possible.
 
-This approach is the primary feature of this action. It works by creating the most optimal invalidation batch request
-based on the `balanced-limit` value. For example if the value of `balanced-limit` is set to `5`, then it will issue up
-to `5` invalidation requests.  The action will never exceed this value.
+ For example if the value of `balanced-limit` is set to `5`, then it will issue up
+to `5` invalidation requests. The action will never exceed this value.
 
-If the `balanced-limit` value is too low to accomodate all precise invalidations, then it will resort to the
+If the `balanced-limit` value is too low to perform all necessary precise invalidations, then it will resort to the
 wildcard approach, partially or completely.
 
-
-The generated wildcards will try to minimize the number of invalidated files a minuumum by narrowing its scope.
+The generated wildcards will try to minimize the number of invalidated files by narrowing its scope.
 
 <div  align="center">
 <img alt="linkertinker" src="./.github/limit3c.svg" width="500" />
 <img alt="linkertinker" src="./.github/limit2c.svg" width="500" />
 <img alt="linkertinker" src="./.github/limit1c.svg" width="500" />
 </div>
-
 
 ### `FRUGAL`
 
@@ -117,9 +115,9 @@ jobs:
 
 ## Motivation
 
-The available actions are using a simple yet inneficient approach that invalidates the changes using a precise
-1 file -> 1 invalidation request approach, which potentiall can result in a quite large monthly bill, provided that
-your project is updated frequently and got a lot of files (exactly the case at my company).
+The available actions are using a simple yet inefficient approach that invalidates the changes using a precise
+1 file -> 1 invalidation request approach, which potentially can result in a quite large monthly bill, provided that
+your project is updated frequently and has a lot of files (exactly the case at my company).
 Another approach is to issue general, root invalidations like `/*` which would cause the consumers of your app
 to redownload the assets which did not actually change.
 
