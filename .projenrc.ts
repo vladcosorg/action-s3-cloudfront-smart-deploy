@@ -68,7 +68,7 @@ const project = new (class extends GithubAction {
 
     const workflow = new GithubWorkflow(GitHub.of(project)!, 'release-action')
     workflow.on({
-      create: {},
+      release: { types: ['published'] },
     })
     workflow.addJob('release', {
       runsOn: ['ubuntu-latest'],
