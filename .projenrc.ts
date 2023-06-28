@@ -97,7 +97,7 @@ const project = new (class extends GithubAction {
       moduleResolution: TypeScriptModuleResolution.BUNDLER,
     },
   },
-  githubRelease: false,
+  // githubRelease: false,
   actionMetadata: {
     name: 'S3/Cloudfront Smart Invalidation -  save money on invalidations and maximize cache hits',
     description:
