@@ -2,9 +2,7 @@
 
 name: release-action
 on:
-  push:
-    tags:
-      - v*
+  create: {}
 jobs:
   release:
     runs-on: ubuntu-latest
