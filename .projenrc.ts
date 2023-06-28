@@ -39,7 +39,7 @@ const project = new (class extends GithubAction {
             with: {
               source: '${{ runner.temp }}/test',
               target: 's3://${{ vars.AWS_BUCKET }}/',
-              'distribution-id': '${{ vars.AWS_DISTRIBUTION }}',
+              distribution: '${{ vars.AWS_DISTRIBUTION }}',
             },
           },
           {
