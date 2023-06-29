@@ -84,11 +84,14 @@ jobs:
         if: steps.branch_exists.outcome != 'success'
         run: git switch --orphan releases
         working-directory: ./repo
+      - name: Cleanup
+        run: |-
+          git rm -rf .
+          git clean -fxd
+        continue-on-error: true
+        working-directory: ./repo
       - run: find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +
         working-directory: ./repo
-      - name: Cleanup
-        run: git rm -r --cached .
-        continue-on-error: true
       - run: git restore --source main action.yml
       - run: ls -la
       - id: commit

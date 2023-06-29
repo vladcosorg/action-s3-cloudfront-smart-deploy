@@ -108,14 +108,16 @@ const project = new (class extends GithubAction {
           workingDirectory: './repo',
         },
         {
-          run: 'find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +',
+          name: 'Cleanup',
+          continueOnError: true,
+          run: ['git rm -rf .', 'git clean -fxd'].join('\n'),
           workingDirectory: './repo',
         },
         {
-          name: 'Cleanup',
-          continueOnError: true,
-          run: 'git rm -r --cached .',
+          run: 'find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +',
+          workingDirectory: './repo',
         },
+
         {
           run: 'git restore --source main action.yml',
         },
