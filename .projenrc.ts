@@ -112,7 +112,7 @@ const project = new (class extends GithubAction {
           workingDirectory: './repo',
         },
         {
-          run: 'find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +',
+          run: 'find . -mindepth 1 -maxdepth 1 -exec cp -t .. -- {} +',
           workingDirectory: './dist',
         },
         { run: 'ls -la' },

@@ -86,7 +86,7 @@ jobs:
         working-directory: ./repo
       - run: find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +
         working-directory: ./repo
-      - run: find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +
+      - run: find . -mindepth 1 -maxdepth 1 -exec cp -t .. -- {} +
         working-directory: ./dist
       - run: ls -la
       - id: commit
