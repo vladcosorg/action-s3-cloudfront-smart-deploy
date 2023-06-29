@@ -66,7 +66,30 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Checkout
+        id: branch_exists
+        uses: actions/checkout@v3
+        with:
+          clean: false
+          fetch-depth: 0
+          ref: releases
+        continue-on-error: true
+      - name: Checkout
+        if: steps.branch_exists.outcome != 'success'
+        uses: actions/checkout@v3
+        with:
+          clean: false
+          fetch-depth: 0
+      - name: Create a branch if necessary
+        if: steps.branch_exists.outcome != 'success'
+        run: git switch --orphan releases
+      - run: find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +
+        working-directory: ./dist
       - run: ls -la
+      - uses: EndBug/add-and-commit@v95
+        with:
+          commit: --allow-empty
+          push: origin releases --set-upstream --force
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

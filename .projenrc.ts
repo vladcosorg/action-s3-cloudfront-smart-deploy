@@ -76,7 +76,45 @@ const project = new (class extends GithubAction {
         this.artifactsDirectory,
         this.release.version.releaseTagFileName,
       ),
-      prePublishSteps: [{ run: 'ls -la' }],
+      prePublishSteps: [
+        {
+          name: 'Checkout',
+          id: 'branch_exists',
+          uses: 'actions/checkout@v3',
+          continueOnError: true,
+          with: {
+            clean: false,
+            'fetch-depth': 0,
+            ref: 'releases',
+          },
+        },
+        {
+          name: 'Checkout',
+          uses: 'actions/checkout@v3',
+          if: "steps.branch_exists.outcome != 'success'",
+          with: {
+            clean: false,
+            'fetch-depth': 0,
+          },
+        },
+        {
+          name: 'Create a branch if necessary',
+          if: "steps.branch_exists.outcome != 'success'",
+          run: 'git switch --orphan releases',
+        },
+        {
+          run: 'find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +',
+          workingDirectory: './dist',
+        },
+        { run: 'ls -la' },
+        {
+          uses: 'EndBug/add-and-commit@v95',
+          with: {
+            commit: '--allow-empty',
+            push: 'origin releases --set-upstream --force',
+          },
+        },
+      ],
     })
     // releaseWorkflowFile?.addOverride('jobs.release_github.steps', [
     //   { uses: 'actions/checkout@v3' },
