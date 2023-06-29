@@ -1,11 +1,8 @@
 import path from 'node:path'
 
 import { GithubAction, RunsUsing } from '@vladcos/projen-base'
-import { ObjectFile } from 'projen'
 import { JobPermission } from 'projen/lib/github/workflows-model'
 import { TypeScriptModuleResolution } from 'projen/lib/javascript'
-
-console.log(ObjectFile.prototype)
 
 const project = new (class extends GithubAction {
   override preSynthesize() {
@@ -65,6 +62,10 @@ const project = new (class extends GithubAction {
       'write',
     )
     // releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
+    releaseWorkflowFile?.addOverride(
+      'jobs.release_github.steps.10.env.GITHUB_REF',
+      '${{ steps.commit.outputs.commit_sha }}',
+    )
     this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
     this.release?.publisher.publishToGitHubReleases({
       changelogFile: path.posix.join(
@@ -116,6 +117,7 @@ const project = new (class extends GithubAction {
         },
         { run: 'ls -la' },
         {
+          id: 'commit',
           uses: 'EndBug/add-and-commit@v9',
           with: {
             push: 'origin releases --set-upstream --force',
