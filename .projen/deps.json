@@ -136,14 +136,6 @@
       "type": "build"
     },
     {
-      "name": "vite-tsconfig-paths",
-      "type": "build"
-    },
-    {
-      "name": "vitest",
-      "type": "build"
-    },
-    {
       "name": "@actions/core",
       "type": "runtime"
     },

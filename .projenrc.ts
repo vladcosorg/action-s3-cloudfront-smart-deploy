@@ -53,7 +53,7 @@ const project = new (class extends GithubAction {
           ],
         },
       })
-    this.testTask.reset()
+
     const releaseWorkflowFile = this.tryFindObjectFile(
       '.github/workflows/release.yml',
     )
@@ -152,7 +152,7 @@ const project = new (class extends GithubAction {
   ],
   name: '@vladcos/action-s3-cloudfront-smart-deploy',
   projenrcTs: true,
-
+  vitest: false,
   tsconfigDev: {
     compilerOptions: {
       module: 'ES2022',
@@ -187,5 +187,4 @@ const project = new (class extends GithubAction {
   ],
   entrypoint: './mjs/index.mjs',
 })
-
 project.synth()
