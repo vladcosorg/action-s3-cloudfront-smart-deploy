@@ -2,7 +2,6 @@
   "name": "@vladcos/action-s3-cloudfront-smart-deploy",
   "scripts": {
     "build": "npx projen build",
-    "bump": "npx projen bump",
     "clobber": "npx projen clobber",
     "compile": "npx projen compile",
     "default": "npx projen default",
@@ -13,10 +12,8 @@
     "post-compile": "npx projen post-compile",
     "post-upgrade": "npx projen post-upgrade",
     "pre-compile": "npx projen pre-compile",
-    "release": "npx projen release",
     "test": "npx projen test",
     "test:watch": "npx projen test:watch",
-    "unbump": "npx projen unbump",
     "upgrade": "npx projen upgrade",
     "watch": "npx projen watch",
     "projen": "npx projen"
@@ -47,7 +44,6 @@
     "packemon": "^3.2.0",
     "prettier": "^2.8.8",
     "projen": "^0.71.106",
-    "standard-version": "^9",
     "ts-extras": "^0.11.0",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^3.14.2",

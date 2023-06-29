@@ -1,5 +1,4 @@
 import { GithubAction, RunsUsing } from '@vladcos/projen-base'
-import { GitHub, GithubWorkflow } from 'projen/lib/github'
 import { JobPermission } from 'projen/lib/github/workflows-model'
 import { TypeScriptModuleResolution } from 'projen/lib/javascript'
 
@@ -9,48 +8,49 @@ const project = new (class extends GithubAction {
     this.addGitIgnore('!/dist/')
     this.package.addField('type', 'module')
     const testJob = 'test_list'
-    this.release?.addJobs({
-      [testJob]: {
-        permissions: {
-          contents: JobPermission.READ,
-          idToken: JobPermission.WRITE,
-        },
-        runsOn: ['ubuntu-latest'],
-        env: {
-          CI: 'true',
-        },
-        steps: [
-          { uses: 'actions/checkout@v3' },
-          {
-            name: 'Configure AWS credentials',
-            uses: 'aws-actions/configure-aws-credentials@v2',
-            with: {
-              'role-to-assume': '${{ vars.AWS_ROLE }}',
-              'aws-region': '${{ vars.AWS_REGION }}',
+    false &&
+      this.release?.addJobs({
+        [testJob]: {
+          permissions: {
+            contents: JobPermission.READ,
+            idToken: JobPermission.WRITE,
+          },
+          runsOn: ['ubuntu-latest'],
+          env: {
+            CI: 'true',
+          },
+          steps: [
+            { uses: 'actions/checkout@v3' },
+            {
+              name: 'Configure AWS credentials',
+              uses: 'aws-actions/configure-aws-credentials@v2',
+              with: {
+                'role-to-assume': '${{ vars.AWS_ROLE }}',
+                'aws-region': '${{ vars.AWS_REGION }}',
+              },
             },
-          },
-          {
-            run: [
-              'mkdir ${{ runner.temp }}/test/',
-              'touch ${{ runner.temp }}/test/foo.bar',
-            ].join('\n'),
-          },
-          {
-            uses: './',
-            with: {
-              source: '${{ runner.temp }}/test',
-              target: 's3://${{ vars.AWS_BUCKET }}/',
-              distribution: '${{ vars.AWS_DISTRIBUTION }}',
+            {
+              run: [
+                'mkdir ${{ runner.temp }}/test/',
+                'touch ${{ runner.temp }}/test/foo.bar',
+              ].join('\n'),
             },
-          },
-          {
-            run: ['aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive'].join(
-              '\n',
-            ),
-          },
-        ],
-      },
-    })
+            {
+              uses: './',
+              with: {
+                source: '${{ runner.temp }}/test',
+                target: 's3://${{ vars.AWS_BUCKET }}/',
+                distribution: '${{ vars.AWS_DISTRIBUTION }}',
+              },
+            },
+            {
+              run: ['aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive'].join(
+                '\n',
+              ),
+            },
+          ],
+        },
+      })
 
     const releaseWorkflowFile = this.tryFindObjectFile(
       '.github/workflows/release.yml',
@@ -62,23 +62,28 @@ const project = new (class extends GithubAction {
     releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
     this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
 
+    releaseWorkflowFile?.addOverride('jobs.release_github.steps', [
+      { uses: 'actions/checkout@v3' },
+    ])
+
     // releaseWorkflowFile?.addOverride('jobs.release_github.steps', [
     //   { uses: 'technote-space/release-github-actions@latest' },
     // ])
 
-    const workflow = new GithubWorkflow(GitHub.of(project)!, 'release-action')
-    workflow.on({
-      release: { types: ['published'] },
-      create: {},
-    })
-    workflow.addJob('release', {
-      runsOn: ['ubuntu-latest'],
-      permissions: {},
-      steps: [{ uses: 'technote-space/release-github-actions@v8' }],
-    })
+    // const workflow = new GithubWorkflow(GitHub.of(project)!, 'release-action')
+    // workflow.on({
+    //   release: { types: ['published'] },
+    //   create: {},
+    // })
+    // workflow.addJob('release', {
+    //   runsOn: ['ubuntu-latest'],
+    //   permissions: {},
+    //   steps: [{ uses: 'technote-space/release-github-actions@v8' }],
+    // })
   }
 })({
   releaseToNpm: false,
+  release: false,
   defaultReleaseBranch: 'main',
   devDeps: [
     '@vladcos/projen-base',
