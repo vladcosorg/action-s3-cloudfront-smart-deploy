@@ -26,7 +26,7 @@ jobs:
       - name: Create a branch if necessary
         if: steps.branch_exists.outcome != 'success'
         run: git switch --orphan releases
-      - run: ${{ steps.git_remote.outputs.latest_commit }} >> test.txt
+      - run: ${{ github.run_id }} >> test.txt
       - uses: EndBug/add-and-commit@v9
         with:
           commit: --allow-empty
