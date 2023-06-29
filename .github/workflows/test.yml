@@ -15,14 +15,17 @@ jobs:
       CI: "true"
     steps:
       - name: Checkout
+        id: branch_exists
         uses: actions/checkout@v3
+        continue-on-error: true
         with:
           fetch-depth: 0
           ref: releases
-      - name: Check if branch exists
-        id: branch_exists
-        run: git show-ref --quiet refs/heads/releases
-        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@v3
+        if: steps.branch_exists.outcome != 'success'
+        with:
+          fetch-depth: 0
       - name: Create a branch if necessary
         if: steps.branch_exists.outcome != 'success'
         run: git switch --orphan releases
