@@ -84,6 +84,10 @@ jobs:
         if: steps.branch_exists.outcome != 'success'
         run: git switch --orphan releases
         working-directory: ./repo
+      - run: find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +
+        working-directory: ./repo
+      - run: find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +
+        working-directory: ./dist
       - run: ls -la
       - uses: EndBug/add-and-commit@v9
         with:

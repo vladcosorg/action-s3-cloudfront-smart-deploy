@@ -103,10 +103,14 @@ const project = new (class extends GithubAction {
           run: 'git switch --orphan releases',
           workingDirectory: './repo',
         },
-        // {
-        //   run: 'find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +',
-        //   workingDirectory: './dist',
-        // },
+        {
+          run: 'find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +',
+          workingDirectory: './repo',
+        },
+        {
+          run: 'find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +',
+          workingDirectory: './dist',
+        },
         { run: 'ls -la' },
         {
           uses: 'EndBug/add-and-commit@v9',
