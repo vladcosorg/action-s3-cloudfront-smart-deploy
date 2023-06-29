@@ -1,3 +1,5 @@
+import path from 'node:path'
+
 import { GithubAction, RunsUsing } from '@vladcos/projen-base'
 import { JobPermission } from 'projen/lib/github/workflows-model'
 import { TypeScriptModuleResolution } from 'projen/lib/javascript'
@@ -61,10 +63,24 @@ const project = new (class extends GithubAction {
     )
     releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
     this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
-
-    releaseWorkflowFile?.addOverride('jobs.release_github.steps', [
-      { uses: 'actions/checkout@v3' },
-    ])
+    this.release?.publisher.publishToGitHubReleases({
+      changelogFile: path.posix.join(
+        this.artifactsDirectory,
+        this.release.version.changelogFileName,
+      ),
+      versionFile: path.posix.join(
+        this.artifactsDirectory,
+        this.release.version.versionFileName,
+      ),
+      releaseTagFile: path.posix.join(
+        this.artifactsDirectory,
+        this.release.version.releaseTagFileName,
+      ),
+      prePublishSteps: [{ run: 'ls -la' }],
+    })
+    // releaseWorkflowFile?.addOverride('jobs.release_github.steps', [
+    //   { uses: 'actions/checkout@v3' },
+    // ])
 
     // releaseWorkflowFile?.addOverride('jobs.release_github.steps', [
     //   { uses: 'technote-space/release-github-actions@latest' },
@@ -83,7 +99,7 @@ const project = new (class extends GithubAction {
   }
 })({
   releaseToNpm: false,
-  release: false,
+  // release: false,
   defaultReleaseBranch: 'main',
   devDeps: [
     '@vladcos/projen-base',
@@ -97,6 +113,7 @@ const project = new (class extends GithubAction {
   ],
   name: '@vladcos/action-s3-cloudfront-smart-deploy',
   projenrcTs: true,
+
   tsconfigDev: {
     compilerOptions: {
       module: 'ES2022',
@@ -105,7 +122,7 @@ const project = new (class extends GithubAction {
   },
   // githubRelease: false,
   actionMetadata: {
-    name: 'S3/Cloudfront Smart Invalidation -  save money on invalidations and maximize cache hits',
+    name: 'S3 & Cloudfront Smart Invalidation - save money on invalidations and maximize cache hits',
     description:
       'I will analyze your changed files to S3 and minimize the number of Cloudfront invalidations while maximizing cache hits',
     branding: {
