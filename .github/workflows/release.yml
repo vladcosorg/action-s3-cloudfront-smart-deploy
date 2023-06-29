@@ -84,14 +84,7 @@ jobs:
         if: steps.branch_exists.outcome != 'success'
         run: git switch --orphan releases
         working-directory: ./repo
-      - name: Cleanup
-        run: |-
-          git rm -rf .
-          git clean -fxd
-        continue-on-error: true
-        working-directory: ./repo
-      - run: find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +
-        working-directory: ./repo
+      - run: mv ./repo/.git ./.git
       - run: git restore --source main action.yml
       - run: ls -la
       - id: commit
@@ -99,11 +92,9 @@ jobs:
         with:
           push: origin releases --set-upstream --force
           add: dist action.yml
-        env:
-          GITHUB_REF: ${{ steps.commit.outputs.commit_sha }}
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF: ${{ github.ref }}
+          GITHUB_REF: ${{ steps.commit.outputs.commit_sha }}
         run: errout=$(mktemp); gh release create $(cat dist/releasetag.txt) -R $GITHUB_REPOSITORY -F dist/changelog.md -t $(cat dist/releasetag.txt) --target $GITHUB_REF 2> $errout && true; exitcode=$?; if [ $exitcode -ne 0 ] && ! grep -q "Release.tag_name already exists" $errout; then cat $errout; exit $exitcode; fi
