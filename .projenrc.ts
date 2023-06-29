@@ -108,7 +108,7 @@ const project = new (class extends GithubAction {
         },
         { run: 'ls -la' },
         {
-          uses: 'EndBug/add-and-commit@v95',
+          uses: 'EndBug/add-and-commit@v9',
           with: {
             commit: '--allow-empty',
             push: 'origin releases --set-upstream --force',
