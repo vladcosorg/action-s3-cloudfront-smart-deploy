@@ -61,7 +61,7 @@ const project = new (class extends GithubAction {
       'jobs.release.permissions.id-token',
       'write',
     )
-    releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
+    // releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
     this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
     this.release?.publisher.publishToGitHubReleases({
       changelogFile: path.posix.join(
