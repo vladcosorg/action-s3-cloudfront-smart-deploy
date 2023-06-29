@@ -110,10 +110,11 @@ const project = new (class extends GithubAction {
         {
           run: 'mv ./repo/.git ./.git',
         },
-        {
-          run: 'git restore --source main action.yml',
-        },
         { run: 'ls -la' },
+        {
+          run: 'git checkout main -- action.yml',
+        },
+
         {
           id: 'commit',
           uses: 'EndBug/add-and-commit@v9',
