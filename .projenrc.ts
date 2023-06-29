@@ -102,6 +102,13 @@ const project = new (class extends GithubAction {
           },
         },
         {
+          name: 'Checkout',
+          uses: 'actions/checkout@v3',
+          with: {
+            path: 'main',
+          },
+        },
+        {
           name: 'Create a branch if necessary',
           if: "steps.branch_exists.outcome != 'success'",
           run: 'git switch --orphan releases',
@@ -112,7 +119,7 @@ const project = new (class extends GithubAction {
         },
         { run: 'ls -la' },
         {
-          run: 'git checkout main -- action.yml',
+          run: 'cp ./main/action.yml action.yml',
         },
 
         {
