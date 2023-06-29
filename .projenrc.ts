@@ -53,7 +53,7 @@ const project = new (class extends GithubAction {
           ],
         },
       })
-
+    this.testTask.reset()
     const releaseWorkflowFile = this.tryFindObjectFile(
       '.github/workflows/release.yml',
     )
@@ -83,7 +83,7 @@ const project = new (class extends GithubAction {
           uses: 'actions/checkout@v3',
           continueOnError: true,
           with: {
-            clean: false,
+            path: 'repo',
             'fetch-depth': 0,
             ref: 'releases',
           },
@@ -93,7 +93,7 @@ const project = new (class extends GithubAction {
           uses: 'actions/checkout@v3',
           if: "steps.branch_exists.outcome != 'success'",
           with: {
-            clean: false,
+            path: 'repo',
             'fetch-depth': 0,
           },
         },
@@ -101,6 +101,7 @@ const project = new (class extends GithubAction {
           name: 'Create a branch if necessary',
           if: "steps.branch_exists.outcome != 'success'",
           run: 'git switch --orphan releases',
+          workingDirectory: './repo',
         },
         // {
         //   run: 'find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +',
