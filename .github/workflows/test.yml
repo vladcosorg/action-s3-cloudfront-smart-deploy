@@ -3,7 +3,6 @@
 name: release
 on:
   push: {}
-  workflow_dispatch: {}
 jobs:
   release:
     runs-on: ubuntu-latest
