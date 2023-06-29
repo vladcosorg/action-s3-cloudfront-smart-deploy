@@ -26,3 +26,5 @@ jobs:
       - name: Create a branch if necessary
         if: steps.branch_exists.outcome != 'success'
         run: git switch --orphan releases
+      - run: git add -A && git commit --allow-empty -m "root commit"
+      - run: git push
