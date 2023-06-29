@@ -112,8 +112,11 @@ const project = new (class extends GithubAction {
           workingDirectory: './repo',
         },
         {
-          run: 'find . -mindepth 1 -maxdepth 1 -exec cp -t .. -- {} +',
-          workingDirectory: './dist',
+          name: 'Cleanup',
+          run: 'git rm -r --cached .',
+        },
+        {
+          run: 'git restore --source main action.yml',
         },
         { run: 'ls -la' },
         {
@@ -121,6 +124,7 @@ const project = new (class extends GithubAction {
           uses: 'EndBug/add-and-commit@v9',
           with: {
             push: 'origin releases --set-upstream --force',
+            add: 'dist action.yml',
           },
         },
       ],
