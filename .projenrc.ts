@@ -1,8 +1,11 @@
 import path from 'node:path'
 
 import { GithubAction, RunsUsing } from '@vladcos/projen-base'
+import { ObjectFile } from 'projen'
 import { JobPermission } from 'projen/lib/github/workflows-model'
 import { TypeScriptModuleResolution } from 'projen/lib/javascript'
+
+console.log(ObjectFile.prototype)
 
 const project = new (class extends GithubAction {
   override preSynthesize() {
@@ -115,7 +118,6 @@ const project = new (class extends GithubAction {
         {
           uses: 'EndBug/add-and-commit@v9',
           with: {
-            commit: '--allow-empty',
             push: 'origin releases --set-upstream --force',
           },
         },
