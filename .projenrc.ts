@@ -102,10 +102,10 @@ const project = new (class extends GithubAction {
           if: "steps.branch_exists.outcome != 'success'",
           run: 'git switch --orphan releases',
         },
-        {
-          run: 'find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +',
-          workingDirectory: './dist',
-        },
+        // {
+        //   run: 'find . -mindepth 1 -maxdepth 1 -exec mv -t .. -- {} +',
+        //   workingDirectory: './dist',
+        // },
         { run: 'ls -la' },
         {
           uses: 'EndBug/add-and-commit@v9',
