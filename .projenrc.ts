@@ -113,6 +113,7 @@ const project = new (class extends GithubAction {
         },
         {
           name: 'Cleanup',
+          continueOnError: true,
           run: 'git rm -r --cached .',
         },
         {
