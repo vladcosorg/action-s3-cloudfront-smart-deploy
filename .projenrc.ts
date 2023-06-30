@@ -64,7 +64,7 @@ const project = new (class extends GithubAction {
     releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
     releaseWorkflowFile?.addOverride(
       'jobs.release_github.steps.12.env.GITHUB_REF',
-      '${{ steps.commit.outputs.commit_long_sha }}',
+      'latest',
     )
     releaseWorkflowFile?.addOverride(
       'jobs.release_github.steps.12.if',
