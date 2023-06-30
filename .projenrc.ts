@@ -143,7 +143,7 @@ const project = new (class extends GithubAction {
           },
         },
         {
-          run: 'gh release create lol1 -F dist/changelog.md -t lol1 --target ${{ steps.commit.outputs.commit_long_sha }}',
+          run: 'gh release create lolM -F dist/changelog.md -t lolA --target ${{ steps.commit.outputs.commit_long_sha }}',
           if: "steps.commit.outputs.committed == 'true'",
           env: {
             GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
