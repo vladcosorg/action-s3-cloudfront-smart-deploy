@@ -68,7 +68,7 @@ const project = new (class extends GithubAction {
     )
     releaseWorkflowFile?.addOverride(
       'jobs.release_github.steps.12.if',
-      `steps.commit.outputs.commited == 'true'`,
+      `steps.commit.outputs.committed == 'true'`,
     )
     this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
     this.release?.publisher.publishToGitHubReleases({
