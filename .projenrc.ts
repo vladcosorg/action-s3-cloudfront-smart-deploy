@@ -180,7 +180,7 @@ const project = new (class extends GithubAction {
             ].join('\n'),
           },
           {
-            uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@master',
+            uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@v1',
             with: {
               source: '${{ runner.temp }}/test',
               target: 's3://${{ vars.AWS_BUCKET }}/',
