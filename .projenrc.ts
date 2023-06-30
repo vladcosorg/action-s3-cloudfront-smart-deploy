@@ -142,6 +142,9 @@ const project = new (class extends GithubAction {
             tag_push: '--force',
           },
         },
+        {
+          run: 'gh release create lol1 --target ${{ steps.commit.outputs.commit_long_sha }}',
+        },
       ],
     })
 
