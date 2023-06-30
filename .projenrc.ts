@@ -187,12 +187,6 @@ const project = new (class extends GithubAction {
         ],
       },
     })
-
-    workflow.addJob('release', {
-      runsOn: ['ubuntu-latest'],
-      permissions: {},
-      steps: [{ uses: 'technote-space/release-github-actions@v8' }],
-    })
   }
 })({
   releaseToNpm: false,

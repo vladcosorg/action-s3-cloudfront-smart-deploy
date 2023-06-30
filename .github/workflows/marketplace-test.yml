@@ -27,8 +27,3 @@ jobs:
           target: s3://${{ vars.AWS_BUCKET }}/
           distribution: ${{ vars.AWS_DISTRIBUTION }}
       - run: aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive
-  release:
-    runs-on: ubuntu-latest
-    permissions: {}
-    steps:
-      - uses: technote-space/release-github-actions@v8
