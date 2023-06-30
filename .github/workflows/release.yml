@@ -94,8 +94,6 @@ jobs:
       - run: cp ./main/action.yml action.yml
       - id: major
         run: echo "version=$(cut -d '.' -f 1 dist/version.txt)" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_REF: ${{ steps.commit.outputs.commit_sha }}
       - id: commit
         uses: EndBug/add-and-commit@v9
         with:
@@ -107,8 +105,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF: ${{ github.ref }}
+          GITHUB_REF: ${{ steps.commit.outputs.commit_sha }}
         run: errout=$(mktemp); gh release create $(cat dist/releasetag.txt) -R $GITHUB_REPOSITORY -F dist/changelog.md -t $(cat dist/releasetag.txt) --target $GITHUB_REF 2> $errout && true; exitcode=$?; if [ $exitcode -ne 0 ] && ! grep -q "Release.tag_name already exists" $errout; then cat $errout; exit $exitcode; fi
+        if: ${{ steps.commit.outputs.commited }}
   test_list:
     runs-on: ubuntu-latest
     permissions:

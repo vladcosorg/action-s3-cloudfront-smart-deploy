@@ -63,8 +63,12 @@ const project = new (class extends GithubAction {
     )
     releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
     releaseWorkflowFile?.addOverride(
-      'jobs.release_github.steps.10.env.GITHUB_REF',
+      'jobs.release_github.steps.12.env.GITHUB_REF',
       '${{ steps.commit.outputs.commit_sha }}',
+    )
+    releaseWorkflowFile?.addOverride(
+      'jobs.release_github.steps.12.if',
+      '${{ steps.commit.outputs.commited }}',
     )
     this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
     this.release?.publisher.publishToGitHubReleases({
