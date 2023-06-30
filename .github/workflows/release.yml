@@ -101,7 +101,7 @@ jobs:
         with:
           push: origin releases --set-upstream --force
           add: dist action.yml
-          tag: v${{ steps.major.outputs.version }} latest --force
+          tag: v${{ steps.major.outputs.version }} --force
           tag_push: --force
       - name: Release
         env:

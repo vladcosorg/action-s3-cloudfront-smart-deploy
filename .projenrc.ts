@@ -135,7 +135,7 @@ const project = new (class extends GithubAction {
           with: {
             push: 'origin releases --set-upstream --force',
             add: 'dist action.yml',
-            tag: 'v${{ steps.major.outputs.version }} latest --force',
+            tag: 'v${{ steps.major.outputs.version }} --force',
             tag_push: '--force',
           },
         },
@@ -180,7 +180,7 @@ const project = new (class extends GithubAction {
             ].join('\n'),
           },
           {
-            uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@v1',
+            uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@main',
             with: {
               source: '${{ runner.temp }}/test',
               target: 's3://${{ vars.AWS_BUCKET }}/',
