@@ -48,3 +48,4 @@ jspm_packages/
 !/./packemon.config.ts
 /.idea
 !/dist/
+!/.github/workflows/marketplace-test.yml

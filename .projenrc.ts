@@ -1,6 +1,7 @@
 import path from 'node:path'
 
 import { GithubAction, RunsUsing } from '@vladcos/projen-base'
+import { GitHub, GithubWorkflow } from 'projen/lib/github'
 import { JobPermission } from 'projen/lib/github/workflows-model'
 import { TypeScriptModuleResolution } from 'projen/lib/javascript'
 
@@ -39,50 +40,6 @@ const project = new (class extends GithubAction {
           },
           {
             uses: './',
-            with: {
-              source: '${{ runner.temp }}/test',
-              target: 's3://${{ vars.AWS_BUCKET }}/',
-              distribution: '${{ vars.AWS_DISTRIBUTION }}',
-            },
-          },
-          {
-            run: ['aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive'].join(
-              '\n',
-            ),
-          },
-        ],
-      },
-    })
-
-    this.release?.addJobs({
-      marketplaceTest: {
-        needs: [testJob],
-        permissions: {
-          contents: JobPermission.READ,
-          idToken: JobPermission.WRITE,
-        },
-        runsOn: ['ubuntu-latest'],
-        env: {
-          CI: 'true',
-        },
-        steps: [
-          { uses: 'actions/checkout@v3' },
-          {
-            name: 'Configure AWS credentials',
-            uses: 'aws-actions/configure-aws-credentials@v2',
-            with: {
-              'role-to-assume': '${{ vars.AWS_ROLE }}',
-              'aws-region': '${{ vars.AWS_REGION }}',
-            },
-          },
-          {
-            run: [
-              'mkdir ${{ runner.temp }}/test/',
-              'touch ${{ runner.temp }}/test/foo.bar',
-            ].join('\n'),
-          },
-          {
-            uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@v1.1.5',
             with: {
               source: '${{ runner.temp }}/test',
               target: 's3://${{ vars.AWS_BUCKET }}/',
@@ -184,16 +141,59 @@ const project = new (class extends GithubAction {
     //   { uses: 'technote-space/release-github-actions@latest' },
     // ])
 
-    // const workflow = new GithubWorkflow(GitHub.of(project)!, 'release-action')
-    // workflow.on({
-    //   release: { types: ['published'] },
-    //   create: {},
-    // })
-    // workflow.addJob('release', {
-    //   runsOn: ['ubuntu-latest'],
-    //   permissions: {},
-    //   steps: [{ uses: 'technote-space/release-github-actions@v8' }],
-    // })
+    const workflow = new GithubWorkflow(GitHub.of(project)!, 'marketplace-test')
+    workflow.on({
+      workflowDispatch: {},
+    })
+    workflow.addJobs({
+      marketplaceTest: {
+        needs: [testJob],
+        permissions: {
+          contents: JobPermission.READ,
+          idToken: JobPermission.WRITE,
+        },
+        runsOn: ['ubuntu-latest'],
+        env: {
+          CI: 'true',
+        },
+        steps: [
+          { uses: 'actions/checkout@v3' },
+          {
+            name: 'Configure AWS credentials',
+            uses: 'aws-actions/configure-aws-credentials@v2',
+            with: {
+              'role-to-assume': '${{ vars.AWS_ROLE }}',
+              'aws-region': '${{ vars.AWS_REGION }}',
+            },
+          },
+          {
+            run: [
+              'mkdir ${{ runner.temp }}/test/',
+              'touch ${{ runner.temp }}/test/foo.bar',
+            ].join('\n'),
+          },
+          {
+            uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@v1',
+            with: {
+              source: '${{ runner.temp }}/test',
+              target: 's3://${{ vars.AWS_BUCKET }}/',
+              distribution: '${{ vars.AWS_DISTRIBUTION }}',
+            },
+          },
+          {
+            run: ['aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive'].join(
+              '\n',
+            ),
+          },
+        ],
+      },
+    })
+
+    workflow.addJob('release', {
+      runsOn: ['ubuntu-latest'],
+      permissions: {},
+      steps: [{ uses: 'technote-space/release-github-actions@v8' }],
+    })
   }
 })({
   releaseToNpm: false,
