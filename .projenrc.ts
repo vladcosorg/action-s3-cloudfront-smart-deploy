@@ -122,13 +122,21 @@ const project = new (class extends GithubAction {
         {
           run: 'cp ./main/action.yml action.yml',
         },
-
+        {
+          id: 'major',
+          run: `echo "version=$(cut -d '.' -f 1 ${path.posix.join(
+            this.artifactsDirectory,
+            this.release.version.versionFileName,
+          )})" >> $GITHUB_OUTPUT`,
+        },
         {
           id: 'commit',
           uses: 'EndBug/add-and-commit@v9',
           with: {
             push: 'origin releases --set-upstream --force',
             add: 'dist action.yml',
+            tag: '${{ steps.major.outputs.version }} lol --force',
+            tag_push: '--force',
           },
         },
       ],

@@ -92,13 +92,17 @@ jobs:
       - run: mv ./repo/.git ./.git
       - run: ls -la
       - run: cp ./main/action.yml action.yml
+      - id: major
+        run: echo "version=$(cut -d '.' -f 1 dist/version.txt)" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_REF: ${{ steps.commit.outputs.commit_sha }}
       - id: commit
         uses: EndBug/add-and-commit@v9
         with:
           push: origin releases --set-upstream --force
           add: dist action.yml
-        env:
-          GITHUB_REF: ${{ steps.commit.outputs.commit_sha }}
+          tag: ${{ steps.major.outputs.version }} lol --force
+          tag_push: --force
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
