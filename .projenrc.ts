@@ -223,7 +223,7 @@ const project = new (class extends GithubAction {
   },
   // githubRelease: false,
   actionMetadata: {
-    name: 'S3 & Cloudfront Smart Invalidation - save money and avoid unnecessary cache invalidation.',
+    name: 'S3 & Cloudfront Smart Invalidation - save money and avoid unnecessary cache invalidation',
     description:
       'Analyze the changed files to S3 and minimize the number of Cloudfront invalidations and maximize cache hits',
     branding: {
