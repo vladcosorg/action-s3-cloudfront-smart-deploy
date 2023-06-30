@@ -101,7 +101,8 @@ jobs:
           add: dist action.yml
           tag: v${{ steps.major.outputs.version }} --force
           tag_push: --force
-      - env:
+      - if: steps.commit.outputs.committed == 'true'
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release create lol1 --target ${{ steps.commit.outputs.commit_long_sha }}
       - name: Release

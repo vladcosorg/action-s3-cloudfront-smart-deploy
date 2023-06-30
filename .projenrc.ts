@@ -144,6 +144,7 @@ const project = new (class extends GithubAction {
         },
         {
           run: 'gh release create lol1 --target ${{ steps.commit.outputs.commit_long_sha }}',
+          if: "steps.commit.outputs.committed == 'true'",
           env: {
             GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
           },
@@ -224,7 +225,7 @@ const project = new (class extends GithubAction {
   actionMetadata: {
     name: 'S3 & Cloudfront Smart Invalidation - save money and avoid unnecessary cache invalidation',
     description:
-      'Analyze the changed files to S3 and minimize the number of Cloudfront invalidations and maximize cache hits.',
+      'Analyze the changed files to S3 and minimize the number of Cloudfront invalidations and maximize cache hits',
     branding: {
       color: 'blue',
       icon: 'refresh-cw',
