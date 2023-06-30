@@ -144,6 +144,9 @@ const project = new (class extends GithubAction {
         },
         {
           run: 'gh release create lol1 --target ${{ steps.commit.outputs.commit_long_sha }}',
+          env: {
+            GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
+          },
         },
       ],
     })
