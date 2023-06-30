@@ -8,7 +8,6 @@ import { TypeScriptModuleResolution } from 'projen/lib/javascript'
 const project = new (class extends GithubAction {
   override preSynthesize() {
     super.preSynthesize()
-    this.addGitIgnore('!/dist/')
     this.package.addField('type', 'module')
     const testJob = 'test_list'
 
@@ -180,7 +179,7 @@ const project = new (class extends GithubAction {
             ].join('\n'),
           },
           {
-            uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@main',
+            uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@latest',
             with: {
               source: '${{ runner.temp }}/test',
               target: 's3://${{ vars.AWS_BUCKET }}/',
