@@ -105,7 +105,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: gh release create lolM2 -F dist/changelog.md  -t tiiitle --target ${{ steps.commit.outputs.commit_long_sha }} -R $GITHUB_REPOSITORY
+          GITHUB_REF: ${{ steps.commit.outputs.commit_long_sha }}
+        run: |-
+          gh release create lolM3 -F dist/changelog.md  -t tiiitle --target $GITHUB_REF -R $GITHUB_REPOSITORY
+          echo $GITHUB_REF
+          echo "$GITHUB_REF"
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
