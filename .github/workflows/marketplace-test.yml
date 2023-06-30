@@ -5,7 +5,6 @@ on:
   workflow_dispatch: {}
 jobs:
   marketplaceTest:
-    needs: test_list
     runs-on: ubuntu-latest
     permissions:
       contents: read

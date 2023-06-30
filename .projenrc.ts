@@ -147,7 +147,6 @@ const project = new (class extends GithubAction {
     })
     workflow.addJobs({
       marketplaceTest: {
-        needs: [testJob],
         permissions: {
           contents: JobPermission.READ,
           idToken: JobPermission.WRITE,
