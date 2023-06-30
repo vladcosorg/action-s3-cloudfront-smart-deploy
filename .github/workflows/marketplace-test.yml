@@ -21,7 +21,7 @@ jobs:
       - run: |-
           mkdir ${{ runner.temp }}/test/
           touch ${{ runner.temp }}/test/foo.bar
-      - uses: vladcosorg/action-s3-cloudfront-smart-deploy@v1
+      - uses: vladcosorg/action-s3-cloudfront-smart-deploy@master
         with:
           source: ${{ runner.temp }}/test
           target: s3://${{ vars.AWS_BUCKET }}/
