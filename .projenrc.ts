@@ -135,7 +135,7 @@ const project = new (class extends GithubAction {
           with: {
             push: 'origin releases --set-upstream --force',
             add: 'dist action.yml',
-            tag: 'v${{ steps.major.outputs.version }} --force',
+            tag: 'v${{ steps.major.outputs.version }} latest --force',
             tag_push: '--force',
           },
         },
@@ -223,7 +223,7 @@ const project = new (class extends GithubAction {
   actionMetadata: {
     name: 'S3 & Cloudfront Smart Invalidation - save money and maximize cache hits',
     description:
-      'It will analyze your changed files to S3 and minimize the number of Cloudfront invalidations while maximizing cache hits',
+      'Analyze your changed files to S3 and minimize the number of Cloudfront invalidations while maximizing cache hits',
     branding: {
       color: 'blue',
       icon: 'refresh-cw',
