@@ -135,7 +135,7 @@ const project = new (class extends GithubAction {
           with: {
             push: 'origin releases --set-upstream --force',
             add: 'dist action.yml',
-            tag: '${{ steps.major.outputs.version }} lol --force',
+            tag: 'v${{ steps.major.outputs.version }} --force',
             tag_push: '--force',
           },
         },
