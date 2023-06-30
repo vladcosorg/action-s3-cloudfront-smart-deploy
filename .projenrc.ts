@@ -64,7 +64,7 @@ const project = new (class extends GithubAction {
     releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
     releaseWorkflowFile?.addOverride(
       'jobs.release_github.steps.13.env.GITHUB_REF',
-      'latest',
+      '${{ steps.commit.outputs.commit_long_sha }}',
     )
     releaseWorkflowFile?.addOverride(
       'jobs.release_github.steps.13.if',
@@ -143,10 +143,12 @@ const project = new (class extends GithubAction {
           },
         },
         {
-          run: 'gh release create lolM -F dist/changelog.md -t lolA --target ${{ steps.commit.outputs.commit_long_sha }}',
+          run: 'gh release create lolM1 -F dist/changelog.md  -t lolA1 --target $GITHUB_REF -R $GITHUB_REPOSITORY',
           if: "steps.commit.outputs.committed == 'true'",
           env: {
             GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
+            GITHUB_REPOSITORY: '${{ github.repository }}',
+            GITHUB_REF: '${{ steps.commit.outputs.commit_long_sha }}',
           },
         },
       ],
@@ -223,7 +225,7 @@ const project = new (class extends GithubAction {
   },
   // githubRelease: false,
   actionMetadata: {
-    name: 'S3 & Cloudfront Smart Invalidation - save money and avoid unnecessary cache invalidation',
+    name: 'S3 & Cloudfront Smart Invalidation - save money and avoid unnecessary cache invalidation.',
     description:
       'Analyze the changed files to S3 and minimize the number of Cloudfront invalidations and maximize cache hits',
     branding: {

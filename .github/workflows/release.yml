@@ -104,12 +104,14 @@ jobs:
       - if: steps.commit.outputs.committed == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create lolM -F dist/changelog.md -t lolA --target ${{ steps.commit.outputs.commit_long_sha }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF: ${{ steps.commit.outputs.commit_long_sha }}
+        run: gh release create lolM1 -F dist/changelog.md  -t lolA1 --target $GITHUB_REF -R $GITHUB_REPOSITORY
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF: latest
+          GITHUB_REF: ${{ steps.commit.outputs.commit_long_sha }}
         run: errout=$(mktemp); gh release create $(cat dist/releasetag.txt) -R $GITHUB_REPOSITORY -F dist/changelog.md -t $(cat dist/releasetag.txt) --target $GITHUB_REF 2> $errout && true; exitcode=$?; if [ $exitcode -ne 0 ] && ! grep -q "Release.tag_name already exists" $errout; then cat $errout; exit $exitcode; fi
         if: steps.commit.outputs.committed == 'true'
   test_list:
