@@ -10,49 +10,93 @@ const project = new (class extends GithubAction {
     this.addGitIgnore('!/dist/')
     this.package.addField('type', 'module')
     const testJob = 'test_list'
-    false &&
-      this.release?.addJobs({
-        [testJob]: {
-          permissions: {
-            contents: JobPermission.READ,
-            idToken: JobPermission.WRITE,
-          },
-          runsOn: ['ubuntu-latest'],
-          env: {
-            CI: 'true',
-          },
-          steps: [
-            { uses: 'actions/checkout@v3' },
-            {
-              name: 'Configure AWS credentials',
-              uses: 'aws-actions/configure-aws-credentials@v2',
-              with: {
-                'role-to-assume': '${{ vars.AWS_ROLE }}',
-                'aws-region': '${{ vars.AWS_REGION }}',
-              },
-            },
-            {
-              run: [
-                'mkdir ${{ runner.temp }}/test/',
-                'touch ${{ runner.temp }}/test/foo.bar',
-              ].join('\n'),
-            },
-            {
-              uses: './',
-              with: {
-                source: '${{ runner.temp }}/test',
-                target: 's3://${{ vars.AWS_BUCKET }}/',
-                distribution: '${{ vars.AWS_DISTRIBUTION }}',
-              },
-            },
-            {
-              run: ['aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive'].join(
-                '\n',
-              ),
-            },
-          ],
+
+    this.release?.addJobs({
+      [testJob]: {
+        permissions: {
+          contents: JobPermission.READ,
+          idToken: JobPermission.WRITE,
         },
-      })
+        runsOn: ['ubuntu-latest'],
+        env: {
+          CI: 'true',
+        },
+        steps: [
+          { uses: 'actions/checkout@v3' },
+          {
+            name: 'Configure AWS credentials',
+            uses: 'aws-actions/configure-aws-credentials@v2',
+            with: {
+              'role-to-assume': '${{ vars.AWS_ROLE }}',
+              'aws-region': '${{ vars.AWS_REGION }}',
+            },
+          },
+          {
+            run: [
+              'mkdir ${{ runner.temp }}/test/',
+              'touch ${{ runner.temp }}/test/foo.bar',
+            ].join('\n'),
+          },
+          {
+            uses: './',
+            with: {
+              source: '${{ runner.temp }}/test',
+              target: 's3://${{ vars.AWS_BUCKET }}/',
+              distribution: '${{ vars.AWS_DISTRIBUTION }}',
+            },
+          },
+          {
+            run: ['aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive'].join(
+              '\n',
+            ),
+          },
+        ],
+      },
+    })
+
+    this.release?.addJobs({
+      marketplaceTest: {
+        needs: [testJob],
+        permissions: {
+          contents: JobPermission.READ,
+          idToken: JobPermission.WRITE,
+        },
+        runsOn: ['ubuntu-latest'],
+        env: {
+          CI: 'true',
+        },
+        steps: [
+          { uses: 'actions/checkout@v3' },
+          {
+            name: 'Configure AWS credentials',
+            uses: 'aws-actions/configure-aws-credentials@v2',
+            with: {
+              'role-to-assume': '${{ vars.AWS_ROLE }}',
+              'aws-region': '${{ vars.AWS_REGION }}',
+            },
+          },
+          {
+            run: [
+              'mkdir ${{ runner.temp }}/test/',
+              'touch ${{ runner.temp }}/test/foo.bar',
+            ].join('\n'),
+          },
+          {
+            uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@v1.1.5',
+            with: {
+              source: '${{ runner.temp }}/test',
+              target: 's3://${{ vars.AWS_BUCKET }}/',
+              distribution: '${{ vars.AWS_DISTRIBUTION }}',
+            },
+          },
+          {
+            run: ['aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive'].join(
+              '\n',
+            ),
+          },
+        ],
+      },
+    })
 
     const releaseWorkflowFile = this.tryFindObjectFile(
       '.github/workflows/release.yml',
@@ -61,7 +105,7 @@ const project = new (class extends GithubAction {
       'jobs.release.permissions.id-token',
       'write',
     )
-    // releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
+    releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
     releaseWorkflowFile?.addOverride(
       'jobs.release_github.steps.10.env.GITHUB_REF',
       '${{ steps.commit.outputs.commit_sha }}',
