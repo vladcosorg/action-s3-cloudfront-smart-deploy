@@ -64,7 +64,7 @@ const project = new (class extends GithubAction {
     releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
     releaseWorkflowFile?.addOverride(
       'jobs.release_github.steps.12.env.GITHUB_REF',
-      '${{ steps.commit.outputs.commit_sha }}',
+      '${{ steps.commit.outputs.commit_long_sha }}',
     )
     releaseWorkflowFile?.addOverride(
       'jobs.release_github.steps.12.if',
@@ -218,7 +218,7 @@ const project = new (class extends GithubAction {
   actionMetadata: {
     name: 'S3 & Cloudfront Smart Invalidation - save money and avoid unnecessary cache invalidation',
     description:
-      'Analyze the changed files to S3 and minimize the number of Cloudfront invalidations and maximize cache hits',
+      'Analyze the changed files to S3 and minimize the number of Cloudfront invalidations and maximize cache hits.',
     branding: {
       color: 'blue',
       icon: 'refresh-cw',
