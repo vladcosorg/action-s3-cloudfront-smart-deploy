@@ -144,7 +144,7 @@ const project = new (class extends GithubAction {
         },
         {
           run: [
-            'gh release create lolM3 -F dist/changelog.md  -t tiiitle --target $GITHUB_REF -R $GITHUB_REPOSITORY',
+            'gh release create lolM4 -F dist/changelog.md  -t tiiitle --target $GITHUB_REF -R $GITHUB_REPOSITORY',
             'echo $GITHUB_REF',
             'echo "$GITHUB_REF"',
           ].join('\n'),
