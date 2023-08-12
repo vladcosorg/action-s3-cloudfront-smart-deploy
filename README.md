@@ -26,7 +26,7 @@ whilst preserving user cache and preventing useless cache drops.**
 
 ```yaml
 - name: Upload changes to S3 and issue Cloudfront invalidations
- uses: vladcosorg/action-s3-cloudfront-smart-deploy@master
+ uses: vladcosorg/action-s3-cloudfront-smart-deploy@v1
  with:
    source: local/path/to/dir
    target: s3://my-bucket-name/
@@ -106,7 +106,7 @@ jobs:
           role-to-assume: arn:aws:iam::111111111111:role/my-github-actions-role-test
           aws-region: us-east-1
       - name: Upload changes to S3 and issue Cloudfront invalidations
-        uses: vladcosorg/action-s3-cloudfront-smart-deploy@master
+        uses: vladcosorg/action-s3-cloudfront-smart-deploy@v1
         with:
           source: local/path/to/dir
           target: s3://my-bucket-name/
