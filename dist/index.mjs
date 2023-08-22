@@ -21225,6 +21225,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("util");
 __nccwpck_require__.a(__webpack_module__, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _runner_mjs__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(916);
 
+console.log('test1');
 await (0,_runner_mjs__WEBPACK_IMPORTED_MODULE_0__/* .run */ .K)();
 //# sourceMappingURL=index.mjs.map
 
