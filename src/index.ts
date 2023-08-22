@@ -1,3 +1,3 @@
 import { run } from '@/src/runner'
-console.log('test');
+console.log('test1');
 await run()
