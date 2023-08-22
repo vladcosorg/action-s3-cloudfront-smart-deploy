@@ -21,4 +21,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF: d2d61a9955adea846885f3b413db690c530e86e7
-        run: errout=$(mktemp); gh release create v1.1 -R $GITHUB_REPOSITORY --notes "FgaFFF" -t "v1.1" --target $GITHUB_REF 2> $errout && true; exitcode=$?; if [ $exitcode -ne 0 ] && ! grep -q "Release.tag_name already exists" $errout; then cat $errout; exit $exitcode; fi
+        run: errout=$(mktemp); gh release create v1.1 -R $GITHUB_REPOSITORY --notes "FgaFFF" -t "v1.1" --target $(GITHUB_REF) 2> $errout && true; exitcode=$?; if [ $exitcode -ne 0 ] && ! grep -q "Release.tag_name already exists" $errout; then cat $errout; exit $exitcode; fi
