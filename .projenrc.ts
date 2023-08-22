@@ -64,7 +64,7 @@ const project = new (class extends GithubAction {
     releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
     releaseWorkflowFile?.addOverride(
       'jobs.release_github.steps.13.env.GITHUB_REF',
-      '${{ steps.commit.outputs.commit_long_sha }}',
+      'latest',
     )
     releaseWorkflowFile?.addOverride(
       'jobs.release_github.steps.13.if',
@@ -144,7 +144,7 @@ const project = new (class extends GithubAction {
         },
         {
           run: [
-            'gh release create lolM4 -F dist/changelog.md  -t tiiitle --target $GITHUB_REF -R $GITHUB_REPOSITORY',
+            'gh release create lolM4 -F dist/changelog.md  -t tiiitle --target latest -R $GITHUB_REPOSITORY',
             'echo $GITHUB_REF',
             'echo "$GITHUB_REF"',
           ].join('\n'),
