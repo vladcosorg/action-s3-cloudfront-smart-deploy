@@ -20,7 +20,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF: d2d61a9955adea846885f3b413db690c530e86e7
+          GITHUB_REFA: d2d61a9955adea846885f3b413db690c530e86e7
         run: |
           set -x
-          gh release create v1.2 -R $GITHUB_REPOSITORY --notes "FgaFFF" -t "v1.2" --target "$GITHUB_REF"
+          gh release create v1.2 -R $GITHUB_REPOSITORY --notes "FgaFFF" -t "v1.2" --target "$GITHUB_REFA"
