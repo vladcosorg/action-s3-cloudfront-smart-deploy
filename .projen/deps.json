@@ -107,6 +107,10 @@
       "type": "build"
     },
     {
+      "name": "replace-in-file",
+      "type": "build"
+    },
+    {
       "name": "standard-version",
       "version": "^9",
       "type": "build"
@@ -133,6 +137,14 @@
     },
     {
       "name": "typescript",
+      "type": "build"
+    },
+    {
+      "name": "vite-tsconfig-paths",
+      "type": "build"
+    },
+    {
+      "name": "vitest",
       "type": "build"
     },
     {

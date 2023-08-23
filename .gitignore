@@ -45,9 +45,9 @@ jspm_packages/
 !/src/
 /lib
 !/.eslintrc.json
+!/vitest.config.ts
 /dist/
 /mjs
 !/action.yml
 !/./packemon.config.ts
 /.idea
-!/.github/workflows/marketplace-test.yml

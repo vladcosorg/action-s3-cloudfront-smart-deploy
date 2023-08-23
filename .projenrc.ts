@@ -1,73 +1,30 @@
+import * as fs from 'node:fs'
 import path from 'node:path'
 
 import { GithubAction, RunsUsing } from '@vladcos/projen-base'
-import { GitHub, GithubWorkflow } from 'projen/lib/github'
-import { JobPermission } from 'projen/lib/github/workflows-model'
 import { TypeScriptModuleResolution } from 'projen/lib/javascript'
+import replace from 'replace-in-file'
+
+import { addTestJob } from '@/.projenrc/test-workflow'
 
 const project = new (class extends GithubAction {
   override preSynthesize() {
     super.preSynthesize()
     this.package.addField('type', 'module')
-    const testJob = 'test_list'
-
-    this.release?.addJobs({
-      [testJob]: {
-        permissions: {
-          contents: JobPermission.READ,
-          idToken: JobPermission.WRITE,
-        },
-        runsOn: ['ubuntu-latest'],
-        env: {
-          CI: 'true',
-        },
-        steps: [
-          { uses: 'actions/checkout@v3' },
-          {
-            name: 'Configure AWS credentials',
-            uses: 'aws-actions/configure-aws-credentials@v2',
-            with: {
-              'role-to-assume': '${{ vars.AWS_ROLE }}',
-              'aws-region': '${{ vars.AWS_REGION }}',
-            },
-          },
-          {
-            run: [
-              'mkdir ${{ runner.temp }}/test/',
-              'touch ${{ runner.temp }}/test/foo.bar',
-            ].join('\n'),
-          },
-          {
-            uses: './',
-            with: {
-              source: '${{ runner.temp }}/test',
-              target: 's3://${{ vars.AWS_BUCKET }}/',
-              distribution: '${{ vars.AWS_DISTRIBUTION }}',
-            },
-          },
-          {
-            run: ['aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive'].join(
-              '\n',
-            ),
-          },
-        ],
-      },
-    })
 
     const releaseWorkflowFile = this.tryFindObjectFile(
       '.github/workflows/release.yml',
     )
+
+    addTestJob(this.release!, releaseWorkflowFile!)
+
     releaseWorkflowFile?.addOverride(
       'jobs.release.permissions.id-token',
       'write',
     )
-    releaseWorkflowFile?.addOverride('jobs.release.needs', testJob)
+
     releaseWorkflowFile?.addOverride(
-      'jobs.release_github.steps.13.env.GITHUB_REF',
-      'latest',
-    )
-    releaseWorkflowFile?.addOverride(
-      'jobs.release_github.steps.13.if',
+      'jobs.release_github.steps.12.if',
       `steps.commit.outputs.committed == 'true'`,
     )
     this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
@@ -142,71 +99,12 @@ const project = new (class extends GithubAction {
             tag_push: '--force',
           },
         },
-        {
-          run: [
-            'gh release create lolM4 -F dist/changelog.md  -t tiiitle --target latest -R $GITHUB_REPOSITORY',
-            'echo $GITHUB_REF',
-            'echo "$GITHUB_REF"',
-          ].join('\n'),
-          if: "steps.commit.outputs.committed == 'true'",
-          env: {
-            GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
-            GITHUB_REPOSITORY: '${{ github.repository }}',
-            GITHUB_REF: '${{ steps.commit.outputs.commit_long_sha }}',
-          },
-        },
       ],
-    })
-
-    const workflow = new GithubWorkflow(GitHub.of(project)!, 'marketplace-test')
-    workflow.on({
-      workflowDispatch: {},
-    })
-    workflow.addJobs({
-      marketplaceTest: {
-        permissions: {
-          contents: JobPermission.READ,
-          idToken: JobPermission.WRITE,
-        },
-        runsOn: ['ubuntu-latest'],
-        env: {
-          CI: 'true',
-        },
-        steps: [
-          { uses: 'actions/checkout@v3' },
-          {
-            name: 'Configure AWS credentials',
-            uses: 'aws-actions/configure-aws-credentials@v2',
-            with: {
-              'role-to-assume': '${{ vars.AWS_ROLE }}',
-              'aws-region': '${{ vars.AWS_REGION }}',
-            },
-          },
-          {
-            run: [
-              'mkdir ${{ runner.temp }}/test/',
-              'touch ${{ runner.temp }}/test/foo.bar',
-            ].join('\n'),
-          },
-          {
-            uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@latest',
-            with: {
-              source: '${{ runner.temp }}/test',
-              target: 's3://${{ vars.AWS_BUCKET }}/',
-              distribution: '${{ vars.AWS_DISTRIBUTION }}',
-            },
-          },
-          {
-            run: ['aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive'].join(
-              '\n',
-            ),
-          },
-        ],
-      },
     })
   }
 })({
   releaseToNpm: false,
+
   defaultReleaseBranch: 'main',
   devDeps: [
     '@vladcos/projen-base',
@@ -217,17 +115,17 @@ const project = new (class extends GithubAction {
     'type-fest',
     'ts-extras',
     'execa@7',
+    'replace-in-file',
   ],
   name: '@vladcos/action-s3-cloudfront-smart-deploy',
   projenrcTs: true,
-  vitest: false,
+  vitest: true,
   tsconfigDev: {
     compilerOptions: {
       module: 'ES2022',
       moduleResolution: TypeScriptModuleResolution.BUNDLER,
     },
   },
-  // githubRelease: false,
   actionMetadata: {
     name: 'S3 & Cloudfront Smart Invalidation - save money and avoid unnecessary cache invalidation.',
     description:
@@ -256,3 +154,10 @@ const project = new (class extends GithubAction {
   entrypoint: './mjs/index.mjs',
 })
 project.synth()
+fs.chmodSync(path.resolve('.github/workflows/release.yml'), '666')
+replace.replaceInFileSync({
+  files: '.github/workflows/release.yml',
+  from: '--target $GITHUB_REF',
+  to: '--target ${{ steps.commit.outputs.commit_long_sha }}',
+})
+fs.chmodSync(path.resolve('.github/workflows/release.yml'), '444')

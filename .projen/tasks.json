@@ -188,7 +188,22 @@
     },
     "test": {
       "name": "test",
-      "description": "Run tests"
+      "description": "Run tests",
+      "steps": [
+        {
+          "exec": "vitest run",
+          "receiveArgs": true
+        }
+      ]
+    },
+    "test:watch": {
+      "name": "test:watch",
+      "description": "Run vitest in watch mode",
+      "steps": [
+        {
+          "exec": "vitest watch"
+        }
+      ]
     },
     "unbump": {
       "name": "unbump",
@@ -217,13 +232,13 @@
           "exec": "npm update npm-check-updates"
         },
         {
-          "exec": "npm-check-updates --upgrade --target=minor --filter=@bleed-believer/path-alias,@swc/core,@types/lodash,@types/node,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,@vercel/ncc,@vladcos/eslint-config,@vladcos/prettier-config,@vladcos/projen-base,@vladcos/tsconfig,alias-hq,babel-plugin-module-resolver,eslint-config-prettier,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-import,eslint,fs-jetpack,lodash,npm-check-updates,packemon,prettier,projen,standard-version,ts-extras,ts-node,tsconfig-paths,tsx,type-fest,typescript,@actions/core,@actions/exec,@actions/github,zod"
+          "exec": "npm-check-updates --upgrade --target=minor --filter=@bleed-believer/path-alias,@swc/core,@types/lodash,@types/node,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,@vercel/ncc,@vladcos/eslint-config,@vladcos/prettier-config,@vladcos/projen-base,@vladcos/tsconfig,alias-hq,babel-plugin-module-resolver,eslint-config-prettier,eslint-import-resolver-node,eslint-import-resolver-typescript,eslint-plugin-import,eslint,fs-jetpack,lodash,npm-check-updates,packemon,prettier,projen,replace-in-file,standard-version,ts-extras,ts-node,tsconfig-paths,tsx,type-fest,typescript,vite-tsconfig-paths,vitest,@actions/core,@actions/exec,@actions/github,zod"
         },
         {
           "exec": "npm install"
         },
         {
-          "exec": "npm update @bleed-believer/path-alias @swc/core @types/lodash @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser @vercel/ncc @vladcos/eslint-config @vladcos/prettier-config @vladcos/projen-base @vladcos/tsconfig alias-hq babel-plugin-module-resolver eslint-config-prettier eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-import eslint fs-jetpack lodash npm-check-updates packemon prettier projen standard-version ts-extras ts-node tsconfig-paths tsx type-fest typescript @actions/core @actions/exec @actions/github zod"
+          "exec": "npm update @bleed-believer/path-alias @swc/core @types/lodash @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser @vercel/ncc @vladcos/eslint-config @vladcos/prettier-config @vladcos/projen-base @vladcos/tsconfig alias-hq babel-plugin-module-resolver eslint-config-prettier eslint-import-resolver-node eslint-import-resolver-typescript eslint-plugin-import eslint fs-jetpack lodash npm-check-updates packemon prettier projen replace-in-file standard-version ts-extras ts-node tsconfig-paths tsx type-fest typescript vite-tsconfig-paths vitest @actions/core @actions/exec @actions/github zod"
         },
         {
           "exec": "npx projen"

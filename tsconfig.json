@@ -52,6 +52,8 @@
     ".projenrc.js",
     "src/**/*.ts",
     "tests/**/*.ts",
+    "vitest.config.ts",
+    "tests/**/*.ts",
     ".projenrc.ts",
     "projenrc/**/*.ts"
   ],
