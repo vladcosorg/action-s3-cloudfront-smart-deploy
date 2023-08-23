@@ -73,7 +73,7 @@ jobs:
         with:
           path: repo
           fetch-depth: 0
-          ref: latest
+          ref: releases
         continue-on-error: true
       - name: Checkout
         if: steps.branch_exists.outcome != 'success'
@@ -87,7 +87,7 @@ jobs:
           path: main
       - name: Create a branch if necessary
         if: steps.branch_exists.outcome != 'success'
-        run: git switch --orphan latest
+        run: git switch --orphan releases
         working-directory: ./repo
       - run: mv ./repo/.git ./.git
       - run: ls -la
@@ -97,7 +97,7 @@ jobs:
       - id: commit
         uses: EndBug/add-and-commit@v9
         with:
-          push: origin latest --set-upstream --force
+          push: origin releases --set-upstream --force
           add: dist action.yml
           tag: v${{ steps.major.outputs.version }} --force
           tag_push: --force

@@ -50,7 +50,7 @@ const project = new (class extends GithubAction {
           with: {
             path: 'repo',
             'fetch-depth': 0,
-            ref: 'latest',
+            ref: 'releases',
           },
         },
         {
@@ -72,7 +72,7 @@ const project = new (class extends GithubAction {
         {
           name: 'Create a branch if necessary',
           if: "steps.branch_exists.outcome != 'success'",
-          run: 'git switch --orphan latest',
+          run: 'git switch --orphan releases',
           workingDirectory: './repo',
         },
         {
@@ -93,7 +93,7 @@ const project = new (class extends GithubAction {
           id: 'commit',
           uses: 'EndBug/add-and-commit@v9',
           with: {
-            push: 'origin latest --set-upstream --force',
+            push: 'origin releases --set-upstream --force',
             add: 'dist action.yml',
             tag: 'v${{ steps.major.outputs.version }} --force',
             tag_push: '--force',
@@ -120,6 +120,7 @@ const project = new (class extends GithubAction {
   name: '@vladcos/action-s3-cloudfront-smart-deploy',
   projenrcTs: true,
   vitest: true,
+  majorVersion: 1,
   tsconfigDev: {
     compilerOptions: {
       module: 'ES2022',
