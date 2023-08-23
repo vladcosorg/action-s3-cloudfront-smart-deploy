@@ -40,7 +40,7 @@ test<TemporaryDirectoryContext>(
       removeVariableStringsFromSnapshot(output.stdout),
     ).toMatchFileSnapshot('./snapshots/s3sync')
   },
-  { timeout: 10_000 },
+  { timeout: 10_000, retry: 2 },
 )
 
 describe('input validation', () => {

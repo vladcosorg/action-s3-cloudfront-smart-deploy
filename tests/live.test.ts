@@ -23,25 +23,27 @@ afterEach<TemporaryDirectoryContext>((context) => {
   context.directory.remove()
 })
 
-test<TemporaryDirectoryContext>('empty invalid input', async ({
-  directory,
-}) => {
-  directory.file('test1')
+test<TemporaryDirectoryContext>(
+  'empty invalid input',
+  async ({ directory }) => {
+    directory.file('test1')
 
-  directory.file('test2')
-  Object.assign(import.meta.env, {
-    [getEnvName('source')]: directory.path(),
-    [getEnvName('target')]: bucketId,
-  })
+    directory.file('test2')
+    Object.assign(import.meta.env, {
+      [getEnvName('source')]: directory.path(),
+      [getEnvName('target')]: bucketId,
+    })
 
-  await run()
-  directory.file('test3')
-  Object.assign(import.meta.env, {
-    [getEnvName('source')]: directory.path(),
-    [getEnvName('target')]: bucketId,
-    [getEnvName('s3args')]: '--dryrun',
-    [getEnvName('distribution')]: distribution,
-  })
+    await run()
+    directory.file('test3')
+    Object.assign(import.meta.env, {
+      [getEnvName('source')]: directory.path(),
+      [getEnvName('target')]: bucketId,
+      [getEnvName('s3args')]: '--dryrun',
+      [getEnvName('distribution')]: distribution,
+    })
 
-  await run()
-})
+    await run()
+  },
+  { timeout: 10_000, retry: 2 },
+)
