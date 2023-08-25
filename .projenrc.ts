@@ -103,6 +103,17 @@ const project = new (class extends GithubAction {
       ],
     })
   }
+
+  override postSynthesize() {
+    super.postSynthesize()
+    fs.chmodSync(path.resolve('.github/workflows/release.yml'), '666')
+    replace.replaceInFileSync({
+      files: '.github/workflows/release.yml',
+      from: '--target $GITHUB_REF',
+      to: '--target ${{ steps.commit.outputs.commit_long_sha }}',
+    })
+    fs.chmodSync(path.resolve('.github/workflows/release.yml'), '444')
+  }
 })({
   releaseToNpm: false,
 
@@ -119,7 +130,6 @@ const project = new (class extends GithubAction {
     'replace-in-file',
   ],
   name: '@vladcos/action-s3-cloudfront-smart-deploy',
-  projenrcTs: true,
   vitest: true,
   majorVersion: 1,
   tsconfigDev: {
@@ -155,10 +165,3 @@ const project = new (class extends GithubAction {
   entrypoint: './mjs/index.mjs',
 })
 project.synth()
-fs.chmodSync(path.resolve('.github/workflows/release.yml'), '666')
-replace.replaceInFileSync({
-  files: '.github/workflows/release.yml',
-  from: '--target $GITHUB_REF',
-  to: '--target ${{ steps.commit.outputs.commit_long_sha }}',
-})
-fs.chmodSync(path.resolve('.github/workflows/release.yml'), '444')
