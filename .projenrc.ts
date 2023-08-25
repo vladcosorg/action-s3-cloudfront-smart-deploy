@@ -11,6 +11,7 @@ const project = new (class extends GithubAction {
   override preSynthesize() {
     super.preSynthesize()
     this.package.addField('type', 'module')
+    this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
 
     const releaseWorkflowFile = this.tryFindObjectFile(
       '.github/workflows/release.yml',
@@ -27,7 +28,7 @@ const project = new (class extends GithubAction {
       'jobs.release_github.steps.12.if',
       `steps.commit.outputs.committed == 'true'`,
     )
-    this.compileTask.reset('packemon build --loadConfigs --no-addFiles')
+
     this.release?.publisher.publishToGitHubReleases({
       changelogFile: path.posix.join(
         this.artifactsDirectory,
@@ -94,7 +95,7 @@ const project = new (class extends GithubAction {
           uses: 'EndBug/add-and-commit@v9',
           with: {
             push: 'origin latest --set-upstream --force',
-            add: 'dist action.yml',
+            add: 'dist action.yml README.md',
             tag: 'v${{ steps.major.outputs.version }} --force',
             tag_push: '--force',
           },
@@ -141,7 +142,6 @@ const project = new (class extends GithubAction {
       main: 'dist/index.mjs',
     },
   },
-  // githubRelease: false,
   releaseWorkflowSetupSteps: [
     {
       name: 'Configure AWS credentials',

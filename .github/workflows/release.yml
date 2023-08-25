@@ -98,7 +98,7 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           push: origin latest --set-upstream --force
-          add: dist action.yml
+          add: dist action.yml README.md
           tag: v${{ steps.major.outputs.version }} --force
           tag_push: --force
       - name: Release
