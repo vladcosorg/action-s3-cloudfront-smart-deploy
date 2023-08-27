@@ -92,6 +92,7 @@ jobs:
       - run: mv ./repo/.git ./.git
       - run: ls -la
       - run: cp ./main/action.yml action.yml
+      - run: cp ./main/README.md README.md
       - id: major
         run: echo "version=$(cut -d '.' -f 1 dist/version.txt)" >> $GITHUB_OUTPUT
       - id: commit

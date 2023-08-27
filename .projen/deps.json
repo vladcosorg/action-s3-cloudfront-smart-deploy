@@ -40,7 +40,7 @@
       "type": "build"
     },
     {
-      "name": "@vladcos/projen-base",
+      "name": "@vladcos/projen-github-action",
       "type": "build"
     },
     {
@@ -104,6 +104,11 @@
     },
     {
       "name": "projen",
+      "version": "0.72.19",
+      "type": "build"
+    },
+    {
+      "name": "replace-in-file",
       "type": "build"
     },
     {
@@ -142,6 +147,15 @@
     {
       "name": "vitest",
       "type": "build"
+    },
+    {
+      "name": "zod-to-json-schema",
+      "type": "build"
+    },
+    {
+      "name": "projen",
+      "version": "0.72.19",
+      "type": "peer"
     },
     {
       "name": "@actions/core",

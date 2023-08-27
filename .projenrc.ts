@@ -1,4 +1,4 @@
-import { GithubAction, RunsUsing } from '@vladcos/projen-base'
+import { GithubAction, RunsUsing } from '@vladcos/projen-github-action'
 
 import { addTestJob } from '@/.projenrc/test-workflow'
 
@@ -10,13 +10,10 @@ const project = new (class extends GithubAction {
     )
     addTestJob(this.release!, releaseWorkflowFile!)
   }
-  override postSynthesize() {
-    super.postSynthesize()
-  }
 })({
   defaultReleaseBranch: 'main',
   devDeps: [
-    '@vladcos/projen-base',
+    '@vladcos/projen-github-action',
     'fs-jetpack',
     'lodash',
     '@types/lodash',
