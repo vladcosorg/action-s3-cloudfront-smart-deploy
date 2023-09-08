@@ -1,10 +1,6 @@
 {
   "dependencies": [
     {
-      "name": "@swc/core",
-      "type": "build"
-    },
-    {
       "name": "@types/lodash",
       "type": "build"
     },
