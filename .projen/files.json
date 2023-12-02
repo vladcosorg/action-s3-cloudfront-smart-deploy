@@ -1,6 +1,5 @@
 {
   "files": [
-    "./packemon.config.ts",
     ".eslintrc.json",
     ".gitattributes",
     ".github/workflows/auto-approve.yml",
@@ -17,6 +16,7 @@
     ".projen/tasks.json",
     "action.yml",
     "LICENSE",
+    "packemon.config.ts",
     "tsconfig.json",
     "vitest.config.ts"
   ],
