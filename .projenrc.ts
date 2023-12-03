@@ -21,7 +21,6 @@ const project = new (class extends GithubAction {
     const setup = super.renderWorkflowSetup(options)
 
     setup.push(createAwsStep())
-
     return setup
   }
 })({
@@ -65,5 +64,8 @@ const project = new (class extends GithubAction {
 project
   .tryFindObjectFile('.github/workflows/build.yml')
   ?.addOverride('jobs.build.permissions.id-token', 'write')
+project
+  .tryFindObjectFile('.github/workflows/upgrade-main.yml')
+  ?.addOverride('jobs.upgrade.permissions.id-token', 'write')
 
 project.synth()
