@@ -65,7 +65,6 @@
     },
     {
       "name": "execa",
-      "version": "7",
       "type": "build"
     },
     {
@@ -149,6 +148,7 @@
     },
     {
       "name": "@actions/github",
+      "version": "6",
       "type": "runtime"
     },
     {

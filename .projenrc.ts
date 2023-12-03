@@ -33,7 +33,7 @@ const project = new (class extends GithubAction {
     '@types/lodash',
     'type-fest',
     'ts-extras',
-    'execa@7',
+    'execa',
   ],
   name: '@vladcos/action-s3-cloudfront-smart-deploy',
   majorVersion: 1,
