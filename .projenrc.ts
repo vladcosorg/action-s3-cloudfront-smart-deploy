@@ -1,6 +1,10 @@
 import { GithubAction, RunsUsing } from '@vladcos/projen-github-action'
 
+import { createAwsStep } from '@/.projenrc/createAwsStep'
 import { addTestJob } from '@/.projenrc/test-workflow'
+
+import type { JobStep } from 'projen/lib/github/workflows-model'
+import type { RenderWorkflowSetupOptions } from 'projen/lib/javascript'
 
 const project = new (class extends GithubAction {
   override preSynthesize() {
@@ -9,6 +13,16 @@ const project = new (class extends GithubAction {
       '.github/workflows/release.yml',
     )
     addTestJob(this.release!, releaseWorkflowFile!)
+  }
+
+  override renderWorkflowSetup(
+    options?: RenderWorkflowSetupOptions,
+  ): JobStep[] {
+    const setup = super.renderWorkflowSetup(options)
+
+    setup.push(createAwsStep())
+
+    return setup
   }
 })({
   defaultReleaseBranch: 'main',
