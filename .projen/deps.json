@@ -131,7 +131,7 @@
     },
     {
       "name": "vitest",
-      "version": "^0.34",
+      "version": "v1.0.0-beta.6",
       "type": "build"
     },
     {

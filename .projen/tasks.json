@@ -230,13 +230,13 @@
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@types/lodash,@types/node,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,@vercel/ncc,@vladcos/eslint-config,@vladcos/prettier-config,@vladcos/projen-github-action,@vladcos/tsconfig,alias-hq,babel-plugin-module-resolver,constructs,eslint-import-resolver-typescript,eslint,execa,fs-jetpack,lodash,packemon,prettier,projen,replace-in-file,standard-version,ts-extras,ts-node,tsconfig-paths,tsx,type-fest,typescript,vitest,zod-to-json-schema,@actions/core,@actions/exec,zod"
+          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@types/lodash,@types/node,@typescript-eslint/eslint-plugin,@typescript-eslint/parser,@vercel/ncc,@vladcos/eslint-config,@vladcos/prettier-config,@vladcos/projen-github-action,@vladcos/tsconfig,alias-hq,babel-plugin-module-resolver,constructs,eslint-import-resolver-typescript,eslint,execa,fs-jetpack,lodash,packemon,prettier,projen,replace-in-file,standard-version,ts-extras,ts-node,tsconfig-paths,tsx,type-fest,typescript,zod-to-json-schema,@actions/core,@actions/exec,zod"
         },
         {
           "exec": "npm install"
         },
         {
-          "exec": "npm update @types/lodash @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser @vercel/ncc @vladcos/eslint-config @vladcos/prettier-config @vladcos/projen-github-action @vladcos/tsconfig alias-hq babel-plugin-module-resolver constructs eslint-import-resolver-typescript eslint execa fs-jetpack lodash packemon prettier projen replace-in-file standard-version ts-extras ts-node tsconfig-paths tsx type-fest typescript vitest zod-to-json-schema @actions/core @actions/exec zod"
+          "exec": "npm update @types/lodash @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser @vercel/ncc @vladcos/eslint-config @vladcos/prettier-config @vladcos/projen-github-action @vladcos/tsconfig alias-hq babel-plugin-module-resolver constructs eslint-import-resolver-typescript eslint execa fs-jetpack lodash packemon prettier projen replace-in-file standard-version ts-extras ts-node tsconfig-paths tsx type-fest typescript zod-to-json-schema @actions/core @actions/exec zod"
         },
         {
           "exec": "npx projen"
