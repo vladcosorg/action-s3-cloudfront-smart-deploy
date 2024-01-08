@@ -49,7 +49,6 @@
     "baseUrl": "."
   },
   "include": [
-    ".projenrc.js",
     "src/**/*.ts",
     "tests/**/*.ts",
     "vitest.config.ts",
