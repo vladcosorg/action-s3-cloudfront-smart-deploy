@@ -101,7 +101,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Configure AWS credentials from Test account
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::111111111111:role/my-github-actions-role-test
           aws-region: us-east-1
