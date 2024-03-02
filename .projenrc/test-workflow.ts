@@ -16,10 +16,10 @@ export function addTestJob(release: Release, releaseFile: ObjectFile) {
         CI: 'true',
       },
       steps: [
-        { uses: 'actions/checkout@v3' },
+        { uses: 'actions/checkout@v4' },
         {
           name: 'Configure AWS credentials',
-          uses: 'aws-actions/configure-aws-credentials@v2',
+          uses: 'aws-actions/configure-aws-credentials@v4',
           with: {
             'role-to-assume': '${{ vars.AWS_ROLE }}',
             'aws-region': '${{ vars.AWS_REGION }}',
@@ -32,7 +32,7 @@ export function addTestJob(release: Release, releaseFile: ObjectFile) {
           ].join('\n'),
         },
         {
-          uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@v1',
+          uses: './',
           with: {
             source: '${{ runner.temp }}/test',
             target: 's3://${{ vars.AWS_BUCKET }}/',
