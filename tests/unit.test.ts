@@ -110,7 +110,7 @@ describe('input validation', () => {
         ],
       },
     ],
-  )('$field invalid input', ({ field, checks }) => {
+  )('$field invalid input', ({ checks, field }) => {
     test.each(checks)('%s `%s` should throw an error', (_name, value) => {
       Object.assign(import.meta.env, defaults, {
         [getEnvName(field)]: value,
@@ -141,8 +141,8 @@ describe('input validation', () => {
       checks: [
         ['one element', 'one', ['one']],
         ['two elements', 'one two', ['one', 'two']],
-        ['empty string', ' ', []],
-        ['string with zero length', '', []],
+        ['empty string', ' ', ['--size-only']],
+        ['string with zero length', '', ['--size-only']],
       ],
     },
     {
@@ -167,7 +167,7 @@ describe('input validation', () => {
         ['empty', ' ', 5],
       ],
     },
-  ])('$field valid input', ({ field, checks }) => {
+  ])('$field valid input', ({ checks, field }) => {
     test.each(checks)(
       '%s `%s` should validate successfuly',
       (_name, input, expected) => {

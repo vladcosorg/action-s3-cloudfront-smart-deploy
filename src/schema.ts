@@ -11,12 +11,13 @@ export enum InvalidationStrategy {
   PRECISE = 'precise',
 }
 
-function getArgumentValidation() {
-  return z
-    .string()
-    .trim()
-    .optional()
+function getArgumentValidation(defaultValue?: string) {
+  const validator = z.string().optional()
+
+  return validator
     .transform((value) => {
+      value ??= defaultValue
+
       if (!value || value.length === 0) {
         return []
       }
@@ -49,7 +50,7 @@ export const inputSchemaValidator = z.object({
     .startsWith('s3://')
     .endsWith('/')
     .describe('Target s3 bucket to sync to'),
-  s3args: getArgumentValidation().describe(
+  s3args: getArgumentValidation('--size-only').describe(
     'Additional arguments from https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html',
   ),
   cfargs: getArgumentValidation().describe(

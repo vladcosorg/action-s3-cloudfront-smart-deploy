@@ -6,13 +6,13 @@ import { pickStrategy } from '@/src/strategy-picker'
 
 export async function run(): Promise<void> {
   const {
+    balancedLimit,
+    cfargs,
+    distribution,
+    invalidationStrategy,
+    s3args,
     source,
     target,
-    s3args,
-    cfargs,
-    balancedLimit,
-    invalidationStrategy,
-    distribution,
   } = parseInput()
   core.setCommandEcho(true)
   const output = await getExecOutput('aws', [
@@ -21,7 +21,6 @@ export async function run(): Promise<void> {
     source,
     target,
     '--no-progress',
-    '--size-only',
     ...s3args,
   ])
 

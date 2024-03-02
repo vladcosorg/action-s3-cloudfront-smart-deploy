@@ -37,6 +37,7 @@ export function addTestJob(release: Release, releaseFile: ObjectFile) {
             source: '${{ runner.temp }}/test',
             target: 's3://${{ vars.AWS_BUCKET }}/',
             distribution: '${{ vars.AWS_DISTRIBUTION }}',
+            s3args: '--exact-timestamps',
           },
         },
         {
