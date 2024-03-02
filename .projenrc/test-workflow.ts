@@ -16,7 +16,7 @@ export function addTestJob(release: Release, releaseFile: ObjectFile) {
         CI: 'true',
       },
       steps: [
-        { uses: 'actions/checkout@v4' },
+        { uses: 'actions/checkout@v4', with: { ref: 'latest' } },
         {
           name: 'Configure AWS credentials',
           uses: 'aws-actions/configure-aws-credentials@v4',
