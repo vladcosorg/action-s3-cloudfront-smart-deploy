@@ -49161,7 +49161,10 @@ async function run() {
     s3args = _parseInput.s3args,
     source = _parseInput.source,
     target = _parseInput.target;
+  core.debug(`Input parsing results: ${JSON.stringify(parseInput())}`);
   core.setCommandEcho(true);
+  const commands = ['s3', 'sync', source, target, '--no-progress', ...s3args];
+  core.debug(`Commands to be sent to aws s3: ${JSON.stringify(commands)}`);
   const output = await (0,exec.getExecOutput)('aws', ['s3', 'sync', source, target, '--no-progress', ...s3args]);
   if (!distribution) {
     return;
