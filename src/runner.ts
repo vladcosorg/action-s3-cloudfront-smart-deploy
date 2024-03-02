@@ -17,23 +17,14 @@ export async function run(): Promise<void> {
     target,
   } = parseInput()
 
-  if (core.isDebug()) {
-    core.debug(`Envs: ${JSON.stringify(process.env)}`)
-    core.debug(`Input parsing results: ${JSON.stringify(parseInput())}`)
-  }
+  core.debug(`Envs: ${JSON.stringify(process.env)}`)
+  core.debug(`Input parsing results: ${JSON.stringify(parseInput())}`)
   core.setCommandEcho(true)
   const commands = ['s3', 'sync', source, target, '--no-progress', ...s3args]
 
   core.debug(`Commands to be sent to aws s3: ${JSON.stringify(commands)}`)
 
-  const output = await getExecOutput('aws', [
-    's3',
-    'sync',
-    source,
-    target,
-    '--no-progress',
-    ...s3args,
-  ])
+  const output = await getExecOutput('aws', commands)
 
   if (!distribution) {
     return
