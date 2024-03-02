@@ -32,7 +32,7 @@ export function addTestJob(release: Release, releaseFile: ObjectFile) {
           ].join('\n'),
         },
         {
-          uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@latest',
+          uses: 'vladcosorg/action-s3-cloudfront-smart-deploy@v1',
           with: {
             source: '${{ runner.temp }}/test',
             target: 's3://${{ vars.AWS_BUCKET }}/',
