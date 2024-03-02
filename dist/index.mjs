@@ -49035,7 +49035,7 @@ function getLogMatcher(logs) {
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 function getEnvName(schemaName, full = true) {
-  const internal = (0,lodash.kebabCase)(schemaName).replace('s-3-args', 's3args');
+  const internal = schemaName === 's3args' ? schemaName : (0,lodash.kebabCase)(schemaName);
   if (!full) {
     return internal;
   }
@@ -49164,14 +49164,12 @@ async function run() {
     s3args = _parseInput.s3args,
     source = _parseInput.source,
     target = _parseInput.target;
-  if (core.isDebug()) {
-    core.debug(`Envs: ${JSON.stringify(external_node_process_namespaceObject.env)}`);
-    core.debug(`Input parsing results: ${JSON.stringify(parseInput())}`);
-  }
+  core.debug(`Envs: ${JSON.stringify(external_node_process_namespaceObject.env)}`);
+  core.debug(`Input parsing results: ${JSON.stringify(parseInput())}`);
   core.setCommandEcho(true);
   const commands = ['s3', 'sync', source, target, '--no-progress', ...s3args];
   core.debug(`Commands to be sent to aws s3: ${JSON.stringify(commands)}`);
-  const output = await (0,exec.getExecOutput)('aws', ['s3', 'sync', source, target, '--no-progress', ...s3args]);
+  const output = await (0,exec.getExecOutput)('aws', commands);
   if (!distribution) {
     return;
   }
