@@ -49035,7 +49035,7 @@ function getLogMatcher(logs) {
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 function getEnvName(schemaName, full = true) {
-  const internal = (0,lodash.kebabCase)(schemaName).replace('s-3', 's3');
+  const internal = (0,lodash.kebabCase)(schemaName).replace('s-3-args', 's3args');
   if (!full) {
     return internal;
   }
