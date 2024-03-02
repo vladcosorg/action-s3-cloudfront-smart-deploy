@@ -4,9 +4,11 @@ import { Release } from 'projen/lib/release'
 
 export function addTestJob(release: Release, releaseFile: ObjectFile) {
   const testJob = 'test_list'
-  releaseFile?.addOverride('jobs.release.needs', testJob)
+  // releaseFile?.addOverride('jobs.release.needs')
+  releaseFile?.addOverride('jobs.release_github.needs', testJob)
   release.addJobs({
     [testJob]: {
+      needs: ['release'],
       permissions: {
         contents: JobPermission.READ,
         idToken: JobPermission.WRITE,
