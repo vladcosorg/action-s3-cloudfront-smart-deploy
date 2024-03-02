@@ -48979,8 +48979,10 @@ let InvalidationStrategy = /*#__PURE__*/function (InvalidationStrategy) {
   InvalidationStrategy["PRECISE"] = "precise";
   return InvalidationStrategy;
 }({});
-function getArgumentValidation() {
-  return z.string().trim().optional().transform(value => {
+function getArgumentValidation(defaultValue) {
+  const validator = z.string().optional();
+  return validator.transform(value => {
+    value ??= defaultValue;
     if (!value || value.length === 0) {
       return [];
     }
@@ -48992,7 +48994,7 @@ const inputSchemaValidator = z.object({
     message: `The path '${value}' does not exist`
   })), z.string().trim().min(7).startsWith('s3://').endsWith('/')]),
   target: z.string().trim().min(7).startsWith('s3://').endsWith('/').describe('Target s3 bucket to sync to'),
-  s3args: getArgumentValidation().describe('Additional arguments from https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html'),
+  s3args: getArgumentValidation('--size-only').describe('Additional arguments from https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html'),
   cfargs: getArgumentValidation().describe('Additional arguments from https://docs.aws.amazon.com/cli/latest/reference/cloudfront/create-invalidation.html'),
   distribution: z.string().optional().describe('Cloudfront distribution ID'),
   invalidationStrategy: z.nativeEnum(InvalidationStrategy).default(InvalidationStrategy.BALANCED).describe(' Available values: `BALANCED`, `PRECISE`, `FRUGAL`'),
@@ -49152,15 +49154,15 @@ function pickStrategy(input, {
 
 async function run() {
   const _parseInput = parseInput(),
-    source = _parseInput.source,
-    target = _parseInput.target,
-    s3args = _parseInput.s3args,
-    cfargs = _parseInput.cfargs,
     balancedLimit = _parseInput.balancedLimit,
+    cfargs = _parseInput.cfargs,
+    distribution = _parseInput.distribution,
     invalidationStrategy = _parseInput.invalidationStrategy,
-    distribution = _parseInput.distribution;
+    s3args = _parseInput.s3args,
+    source = _parseInput.source,
+    target = _parseInput.target;
   core.setCommandEcho(true);
-  const output = await (0,exec.getExecOutput)('aws', ['s3', 'sync', source, target, '--no-progress', '--size-only', ...s3args]);
+  const output = await (0,exec.getExecOutput)('aws', ['s3', 'sync', source, target, '--no-progress', ...s3args]);
   if (!distribution) {
     return;
   }
