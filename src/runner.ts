@@ -1,3 +1,5 @@
+import * as process from 'node:process'
+
 import * as core from '@actions/core'
 import { getExecOutput } from '@actions/exec'
 
@@ -15,8 +17,10 @@ export async function run(): Promise<void> {
     target,
   } = parseInput()
 
-  core.debug(`Input parsing results: ${JSON.stringify(parseInput())}`)
-
+  if (core.isDebug()) {
+    core.debug(`Envs: ${JSON.stringify(process.env)}`)
+    core.debug(`Input parsing results: ${JSON.stringify(parseInput())}`)
+  }
   core.setCommandEcho(true)
   const commands = ['s3', 'sync', source, target, '--no-progress', ...s3args]
 
