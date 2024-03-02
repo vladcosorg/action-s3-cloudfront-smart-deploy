@@ -141,9 +141,10 @@ jobs:
       - run: |-
           mkdir ${{ runner.temp }}/test/
           touch ${{ runner.temp }}/test/foo.bar
-      - uses: vladcosorg/action-s3-cloudfront-smart-deploy@latest
+      - uses: vladcosorg/action-s3-cloudfront-smart-deploy@v1
         with:
           source: ${{ runner.temp }}/test
           target: s3://${{ vars.AWS_BUCKET }}/
           distribution: ${{ vars.AWS_DISTRIBUTION }}
+          s3args: --exact-timestamps
       - run: aws s3 rm s3://${{ vars.AWS_BUCKET }}/ --recursive
