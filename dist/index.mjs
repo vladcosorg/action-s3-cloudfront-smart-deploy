@@ -44870,7 +44870,7 @@ module.exports = parseParams
 /***/ ((__webpack_module__, __unused_webpack___webpack_exports__, __nccwpck_require__) => {
 
 __nccwpck_require__.a(__webpack_module__, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
-/* harmony import */ var _runner_mjs__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5916);
+/* harmony import */ var _runner_mjs__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(4016);
 
 await (0,_runner_mjs__WEBPACK_IMPORTED_MODULE_0__/* .run */ .K)();
 //# sourceMappingURL=index.mjs.map
@@ -44880,7 +44880,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 5916:
+/***/ 4016:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -44889,6 +44889,8 @@ __nccwpck_require__.d(__webpack_exports__, {
   "K": () => (/* binding */ run)
 });
 
+;// CONCATENATED MODULE: external "node:process"
+const external_node_process_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:process");
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
@@ -49152,6 +49154,7 @@ function pickStrategy(input, {
 
 
 
+
 async function run() {
   const _parseInput = parseInput(),
     balancedLimit = _parseInput.balancedLimit,
@@ -49161,7 +49164,10 @@ async function run() {
     s3args = _parseInput.s3args,
     source = _parseInput.source,
     target = _parseInput.target;
-  core.debug(`Input parsing results: ${JSON.stringify(parseInput())}`);
+  if (core.isDebug()) {
+    core.debug(`Envs: ${JSON.stringify(external_node_process_namespaceObject.env)}`);
+    core.debug(`Input parsing results: ${JSON.stringify(parseInput())}`);
+  }
   core.setCommandEcho(true);
   const commands = ['s3', 'sync', source, target, '--no-progress', ...s3args];
   core.debug(`Commands to be sent to aws s3: ${JSON.stringify(commands)}`);
