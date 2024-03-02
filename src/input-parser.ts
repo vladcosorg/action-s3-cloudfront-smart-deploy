@@ -12,8 +12,8 @@ export function getEnvName<T extends keyof InputSchema>(
   full = true,
 ) {
   const internal = kebabCase(schemaName).replace(
-    's-3',
-    's3',
+    's-3-args',
+    's3args',
   ) as InputSchemaToEnv<T>
   if (!full) {
     return internal
