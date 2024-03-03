@@ -41,7 +41,7 @@
     "lodash": "^4.17.21",
     "packemon": "^3",
     "prettier": "^3",
-    "projen": "^0.80.4",
+    "projen": "^0.80.5",
     "replace-in-file": "^7.1.0",
     "standard-version": "^9",
     "ts-extras": "^0.11.0",
