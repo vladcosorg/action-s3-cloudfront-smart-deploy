@@ -22,14 +22,14 @@
     "projen": "npx projen"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.202",
+    "@types/lodash": "^4.17.0",
     "@types/node": "^18",
     "@typescript-eslint/eslint-plugin": "^6",
     "@typescript-eslint/parser": "^6",
     "@vercel/ncc": "^0.38.1",
-    "@vladcos/eslint-config": "^0.0.37",
-    "@vladcos/prettier-config": "^0.0.34",
-    "@vladcos/projen-github-action": "^0.0.96",
+    "@vladcos/eslint-config": "^0.0.38",
+    "@vladcos/prettier-config": "^0.0.35",
+    "@vladcos/projen-github-action": "^0.0.101",
     "@vladcos/tsconfig": "^0.0.25",
     "alias-hq": "^6",
     "babel-plugin-module-resolver": "^5",
