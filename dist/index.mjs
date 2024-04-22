@@ -45187,6 +45187,11 @@ class ZodError extends Error {
         processError(this);
         return fieldErrors;
     }
+    static assert(value) {
+        if (!(value instanceof ZodError)) {
+            throw new Error(`Not a ZodError: ${value}`);
+        }
+    }
     toString() {
         return this.message;
     }
@@ -45359,6 +45364,13 @@ const makeIssue = (params) => {
         ...issueData,
         path: fullPath,
     };
+    if (issueData.message !== undefined) {
+        return {
+            ...issueData,
+            path: fullPath,
+            message: issueData.message,
+        };
+    }
     let errorMessage = "";
     const maps = errorMaps
         .filter((m) => !!m)
@@ -45370,11 +45382,12 @@ const makeIssue = (params) => {
     return {
         ...issueData,
         path: fullPath,
-        message: issueData.message || errorMessage,
+        message: errorMessage,
     };
 };
 const EMPTY_PATH = [];
 function addIssueToContext(ctx, issueData) {
+    const overrideMap = getErrorMap();
     const issue = makeIssue({
         issueData: issueData,
         data: ctx.data,
@@ -45382,8 +45395,8 @@ function addIssueToContext(ctx, issueData) {
         errorMaps: [
             ctx.common.contextualErrorMap,
             ctx.schemaErrorMap,
-            getErrorMap(),
-            errorMap, // then global default map
+            overrideMap,
+            overrideMap === errorMap ? undefined : errorMap, // then global default map
         ].filter((x) => !!x),
     });
     ctx.common.issues.push(issue);
@@ -45414,9 +45427,11 @@ class ParseStatus {
     static async mergeObjectAsync(status, pairs) {
         const syncPairs = [];
         for (const pair of pairs) {
+            const key = await pair.key;
+            const value = await pair.value;
             syncPairs.push({
-                key: await pair.key,
-                value: await pair.value,
+                key,
+                value,
             });
         }
         return ParseStatus.mergeObjectSync(status, syncPairs);
@@ -45451,12 +45466,46 @@ const isDirty = (x) => x.status === "dirty";
 const isValid = (x) => x.status === "valid";
 const isAsync = (x) => typeof Promise !== "undefined" && x instanceof Promise;
 
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+function __classPrivateFieldGet(receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+}
+
+function __classPrivateFieldSet(receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+}
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
+
 var errorUtil;
 (function (errorUtil) {
     errorUtil.errToObj = (message) => typeof message === "string" ? { message } : message || {};
     errorUtil.toString = (message) => typeof message === "string" ? message : message === null || message === void 0 ? void 0 : message.message;
 })(errorUtil || (errorUtil = {}));
 
+var _ZodEnum_cache, _ZodNativeEnum_cache;
 class ParseInputLazyPath {
     constructor(parent, value, path, key) {
         this._cachedPath = [];
@@ -45507,12 +45556,17 @@ function processCreateParams(params) {
     if (errorMap)
         return { errorMap: errorMap, description };
     const customMap = (iss, ctx) => {
+        var _a, _b;
+        const { message } = params;
+        if (iss.code === "invalid_enum_value") {
+            return { message: message !== null && message !== void 0 ? message : ctx.defaultError };
+        }
+        if (typeof ctx.data === "undefined") {
+            return { message: (_a = message !== null && message !== void 0 ? message : required_error) !== null && _a !== void 0 ? _a : ctx.defaultError };
+        }
         if (iss.code !== "invalid_type")
             return { message: ctx.defaultError };
-        if (typeof ctx.data === "undefined") {
-            return { message: required_error !== null && required_error !== void 0 ? required_error : ctx.defaultError };
-        }
-        return { message: invalid_type_error !== null && invalid_type_error !== void 0 ? invalid_type_error : ctx.defaultError };
+        return { message: (_b = message !== null && message !== void 0 ? message : invalid_type_error) !== null && _b !== void 0 ? _b : ctx.defaultError };
     };
     return { errorMap: customMap, description };
 }
@@ -45770,11 +45824,13 @@ class ZodType {
     }
 }
 const cuidRegex = /^c[^\s-]{8,}$/i;
-const cuid2Regex = /^[a-z][a-z0-9]*$/;
+const cuid2Regex = /^[0-9a-z]+$/;
 const ulidRegex = /^[0-9A-HJKMNP-TV-Z]{26}$/;
 // const uuidRegex =
 //   /^([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12}|00000000-0000-0000-0000-000000000000)$/i;
 const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
+const nanoidRegex = /^[a-z0-9_-]{21}$/i;
+const durationRegex = /^[-+]?P(?!$)(?:(?:[-+]?\d+Y)|(?:[-+]?\d+[.,]\d+Y$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:(?:[-+]?\d+W)|(?:[-+]?\d+[.,]\d+W$))?(?:(?:[-+]?\d+D)|(?:[-+]?\d+[.,]\d+D$))?(?:T(?=[\d+-])(?:(?:[-+]?\d+H)|(?:[-+]?\d+[.,]\d+H$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:[-+]?\d+(?:[.,]\d+)?S)?)??$/;
 // from https://stackoverflow.com/a/46181/1550155
 // old version: too slow, didn't support unicode
 // const emailRegex = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
@@ -45787,41 +45843,48 @@ const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-
 //   /^[a-zA-Z0-9\.\!\#\$\%\&\'\*\+\/\=\?\^\_\`\{\|\}\~\-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 // const emailRegex =
 //   /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/i;
-const emailRegex = /^(?!\.)(?!.*\.\.)([A-Z0-9_+-\.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9\-]*\.)+[A-Z]{2,}$/i;
+const emailRegex = /^(?!\.)(?!.*\.\.)([A-Z0-9_'+\-\.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9\-]*\.)+[A-Z]{2,}$/i;
 // const emailRegex =
 //   /^[a-z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-z0-9-]+(?:\.[a-z0-9\-]+)*$/i;
 // from https://thekevinscott.com/emojis-in-javascript/#writing-a-regular-expression
 const _emojiRegex = `^(\\p{Extended_Pictographic}|\\p{Emoji_Component})+$`;
 let emojiRegex;
-const ipv4Regex = /^(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))$/;
+// faster, simpler, safer
+const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/;
 const ipv6Regex = /^(([a-f0-9]{1,4}:){7}|::([a-f0-9]{1,4}:){0,6}|([a-f0-9]{1,4}:){1}:([a-f0-9]{1,4}:){0,5}|([a-f0-9]{1,4}:){2}:([a-f0-9]{1,4}:){0,4}|([a-f0-9]{1,4}:){3}:([a-f0-9]{1,4}:){0,3}|([a-f0-9]{1,4}:){4}:([a-f0-9]{1,4}:){0,2}|([a-f0-9]{1,4}:){5}:([a-f0-9]{1,4}:){0,1})([a-f0-9]{1,4}|(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2})))$/;
-// Adapted from https://stackoverflow.com/a/3143231
-const datetimeRegex = (args) => {
+// https://stackoverflow.com/questions/7860392/determine-if-string-is-in-base64-using-javascript
+const base64Regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+// simple
+// const dateRegexSource = `\\d{4}-\\d{2}-\\d{2}`;
+// no leap year validation
+// const dateRegexSource = `\\d{4}-((0[13578]|10|12)-31|(0[13-9]|1[0-2])-30|(0[1-9]|1[0-2])-(0[1-9]|1\\d|2\\d))`;
+// with leap year validation
+const dateRegexSource = `((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))`;
+const dateRegex = new RegExp(`^${dateRegexSource}$`);
+function timeRegexSource(args) {
+    // let regex = `\\d{2}:\\d{2}:\\d{2}`;
+    let regex = `([01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d`;
     if (args.precision) {
-        if (args.offset) {
-            return new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{${args.precision}}(([+-]\\d{2}(:?\\d{2})?)|Z)$`);
-        }
-        else {
-            return new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{${args.precision}}Z$`);
-        }
+        regex = `${regex}\\.\\d{${args.precision}}`;
     }
-    else if (args.precision === 0) {
-        if (args.offset) {
-            return new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(([+-]\\d{2}(:?\\d{2})?)|Z)$`);
-        }
-        else {
-            return new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$`);
-        }
+    else if (args.precision == null) {
+        regex = `${regex}(\\.\\d+)?`;
     }
-    else {
-        if (args.offset) {
-            return new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(([+-]\\d{2}(:?\\d{2})?)|Z)$`);
-        }
-        else {
-            return new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$`);
-        }
-    }
-};
+    return regex;
+}
+function timeRegex(args) {
+    return new RegExp(`^${timeRegexSource(args)}$`);
+}
+// Adapted from https://stackoverflow.com/a/3143231
+function datetimeRegex(args) {
+    let regex = `${dateRegexSource}T${timeRegexSource(args)}`;
+    const opts = [];
+    opts.push(args.local ? `Z?` : `Z`);
+    if (args.offset)
+        opts.push(`([+-]\\d{2}:?\\d{2})`);
+    regex = `${regex}(${opts.join("|")})`;
+    return new RegExp(`^${regex}$`);
+}
 function isValidIP(ip, version) {
     if ((version === "v4" || !version) && ipv4Regex.test(ip)) {
         return true;
@@ -45843,9 +45906,7 @@ class ZodString extends ZodType {
                 code: ZodIssueCode.invalid_type,
                 expected: ZodParsedType.string,
                 received: ctx.parsedType,
-            }
-            //
-            );
+            });
             return INVALID;
         }
         const status = new ParseStatus();
@@ -45937,6 +45998,17 @@ class ZodString extends ZodType {
                     ctx = this._getOrReturnCtx(input, ctx);
                     addIssueToContext(ctx, {
                         validation: "uuid",
+                        code: ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "nanoid") {
+                if (!nanoidRegex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    addIssueToContext(ctx, {
+                        validation: "nanoid",
                         code: ZodIssueCode.invalid_string,
                         message: check.message,
                     });
@@ -46057,11 +46129,57 @@ class ZodString extends ZodType {
                     status.dirty();
                 }
             }
+            else if (check.kind === "date") {
+                const regex = dateRegex;
+                if (!regex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    addIssueToContext(ctx, {
+                        code: ZodIssueCode.invalid_string,
+                        validation: "date",
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "time") {
+                const regex = timeRegex(check);
+                if (!regex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    addIssueToContext(ctx, {
+                        code: ZodIssueCode.invalid_string,
+                        validation: "time",
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "duration") {
+                if (!durationRegex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    addIssueToContext(ctx, {
+                        validation: "duration",
+                        code: ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
             else if (check.kind === "ip") {
                 if (!isValidIP(input.data, check.version)) {
                     ctx = this._getOrReturnCtx(input, ctx);
                     addIssueToContext(ctx, {
                         validation: "ip",
+                        code: ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "base64") {
+                if (!base64Regex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    addIssueToContext(ctx, {
+                        validation: "base64",
                         code: ZodIssueCode.invalid_string,
                         message: check.message,
                     });
@@ -46099,6 +46217,9 @@ class ZodString extends ZodType {
     uuid(message) {
         return this._addCheck({ kind: "uuid", ...errorUtil.errToObj(message) });
     }
+    nanoid(message) {
+        return this._addCheck({ kind: "nanoid", ...errorUtil.errToObj(message) });
+    }
     cuid(message) {
         return this._addCheck({ kind: "cuid", ...errorUtil.errToObj(message) });
     }
@@ -46108,16 +46229,20 @@ class ZodString extends ZodType {
     ulid(message) {
         return this._addCheck({ kind: "ulid", ...errorUtil.errToObj(message) });
     }
+    base64(message) {
+        return this._addCheck({ kind: "base64", ...errorUtil.errToObj(message) });
+    }
     ip(options) {
         return this._addCheck({ kind: "ip", ...errorUtil.errToObj(options) });
     }
     datetime(options) {
-        var _a;
+        var _a, _b;
         if (typeof options === "string") {
             return this._addCheck({
                 kind: "datetime",
                 precision: null,
                 offset: false,
+                local: false,
                 message: options,
             });
         }
@@ -46125,8 +46250,29 @@ class ZodString extends ZodType {
             kind: "datetime",
             precision: typeof (options === null || options === void 0 ? void 0 : options.precision) === "undefined" ? null : options === null || options === void 0 ? void 0 : options.precision,
             offset: (_a = options === null || options === void 0 ? void 0 : options.offset) !== null && _a !== void 0 ? _a : false,
+            local: (_b = options === null || options === void 0 ? void 0 : options.local) !== null && _b !== void 0 ? _b : false,
             ...errorUtil.errToObj(options === null || options === void 0 ? void 0 : options.message),
         });
+    }
+    date(message) {
+        return this._addCheck({ kind: "date", message });
+    }
+    time(options) {
+        if (typeof options === "string") {
+            return this._addCheck({
+                kind: "time",
+                precision: null,
+                message: options,
+            });
+        }
+        return this._addCheck({
+            kind: "time",
+            precision: typeof (options === null || options === void 0 ? void 0 : options.precision) === "undefined" ? null : options === null || options === void 0 ? void 0 : options.precision,
+            ...errorUtil.errToObj(options === null || options === void 0 ? void 0 : options.message),
+        });
+    }
+    duration(message) {
+        return this._addCheck({ kind: "duration", ...errorUtil.errToObj(message) });
     }
     regex(regex, message) {
         return this._addCheck({
@@ -46206,6 +46352,15 @@ class ZodString extends ZodType {
     get isDatetime() {
         return !!this._def.checks.find((ch) => ch.kind === "datetime");
     }
+    get isDate() {
+        return !!this._def.checks.find((ch) => ch.kind === "date");
+    }
+    get isTime() {
+        return !!this._def.checks.find((ch) => ch.kind === "time");
+    }
+    get isDuration() {
+        return !!this._def.checks.find((ch) => ch.kind === "duration");
+    }
     get isEmail() {
         return !!this._def.checks.find((ch) => ch.kind === "email");
     }
@@ -46218,6 +46373,9 @@ class ZodString extends ZodType {
     get isUUID() {
         return !!this._def.checks.find((ch) => ch.kind === "uuid");
     }
+    get isNANOID() {
+        return !!this._def.checks.find((ch) => ch.kind === "nanoid");
+    }
     get isCUID() {
         return !!this._def.checks.find((ch) => ch.kind === "cuid");
     }
@@ -46229,6 +46387,9 @@ class ZodString extends ZodType {
     }
     get isIP() {
         return !!this._def.checks.find((ch) => ch.kind === "ip");
+    }
+    get isBase64() {
+        return !!this._def.checks.find((ch) => ch.kind === "base64");
     }
     get minLength() {
         let min = null;
@@ -47217,9 +47378,10 @@ class ZodObject extends ZodType {
                 const syncPairs = [];
                 for (const pair of pairs) {
                     const key = await pair.key;
+                    const value = await pair.value;
                     syncPairs.push({
                         key,
-                        value: await pair.value,
+                        value,
                         alwaysSet: pair.alwaysSet,
                     });
                 }
@@ -47593,7 +47755,7 @@ const getDiscriminator = (type) => {
     }
     else if (type instanceof ZodNativeEnum) {
         // eslint-disable-next-line ban/ban
-        return Object.keys(type.enum);
+        return util.objectValues(type.enum);
     }
     else if (type instanceof ZodDefault) {
         return getDiscriminator(type._def.innerType);
@@ -47604,8 +47766,23 @@ const getDiscriminator = (type) => {
     else if (type instanceof ZodNull) {
         return [null];
     }
+    else if (type instanceof ZodOptional) {
+        return [undefined, ...getDiscriminator(type.unwrap())];
+    }
+    else if (type instanceof ZodNullable) {
+        return [null, ...getDiscriminator(type.unwrap())];
+    }
+    else if (type instanceof ZodBranded) {
+        return getDiscriminator(type.unwrap());
+    }
+    else if (type instanceof ZodReadonly) {
+        return getDiscriminator(type.unwrap());
+    }
+    else if (type instanceof ZodCatch) {
+        return getDiscriminator(type._def.innerType);
+    }
     else {
-        return null;
+        return [];
     }
 };
 class ZodDiscriminatedUnion extends ZodType {
@@ -47668,7 +47845,7 @@ class ZodDiscriminatedUnion extends ZodType {
         // try {
         for (const type of options) {
             const discriminatorValues = getDiscriminator(type.shape[discriminator]);
-            if (!discriminatorValues) {
+            if (!discriminatorValues.length) {
                 throw new Error(`A discriminator value for key \`${discriminator}\` could not be extracted from all schema options`);
             }
             for (const value of discriminatorValues) {
@@ -47881,6 +48058,7 @@ class ZodRecord extends ZodType {
             pairs.push({
                 key: keyType._parse(new ParseInputLazyPath(ctx, key, ctx.path, key)),
                 value: valueType._parse(new ParseInputLazyPath(ctx, ctx.data[key], ctx.path, key)),
+                alwaysSet: key in ctx.data,
             });
         }
         if (ctx.common.async) {
@@ -48240,6 +48418,10 @@ function createZodEnum(values, params) {
     });
 }
 class ZodEnum extends ZodType {
+    constructor() {
+        super(...arguments);
+        _ZodEnum_cache.set(this, void 0);
+    }
     _parse(input) {
         if (typeof input.data !== "string") {
             const ctx = this._getOrReturnCtx(input);
@@ -48251,7 +48433,10 @@ class ZodEnum extends ZodType {
             });
             return INVALID;
         }
-        if (this._def.values.indexOf(input.data) === -1) {
+        if (!__classPrivateFieldGet(this, _ZodEnum_cache, "f")) {
+            __classPrivateFieldSet(this, _ZodEnum_cache, new Set(this._def.values), "f");
+        }
+        if (!__classPrivateFieldGet(this, _ZodEnum_cache, "f").has(input.data)) {
             const ctx = this._getOrReturnCtx(input);
             const expectedValues = this._def.values;
             addIssueToContext(ctx, {
@@ -48287,15 +48472,26 @@ class ZodEnum extends ZodType {
         }
         return enumValues;
     }
-    extract(values) {
-        return ZodEnum.create(values);
+    extract(values, newDef = this._def) {
+        return ZodEnum.create(values, {
+            ...this._def,
+            ...newDef,
+        });
     }
-    exclude(values) {
-        return ZodEnum.create(this.options.filter((opt) => !values.includes(opt)));
+    exclude(values, newDef = this._def) {
+        return ZodEnum.create(this.options.filter((opt) => !values.includes(opt)), {
+            ...this._def,
+            ...newDef,
+        });
     }
 }
+_ZodEnum_cache = new WeakMap();
 ZodEnum.create = createZodEnum;
 class ZodNativeEnum extends ZodType {
+    constructor() {
+        super(...arguments);
+        _ZodNativeEnum_cache.set(this, void 0);
+    }
     _parse(input) {
         const nativeEnumValues = util.getValidEnumValues(this._def.values);
         const ctx = this._getOrReturnCtx(input);
@@ -48309,7 +48505,10 @@ class ZodNativeEnum extends ZodType {
             });
             return INVALID;
         }
-        if (nativeEnumValues.indexOf(input.data) === -1) {
+        if (!__classPrivateFieldGet(this, _ZodNativeEnum_cache, "f")) {
+            __classPrivateFieldSet(this, _ZodNativeEnum_cache, new Set(util.getValidEnumValues(this._def.values)), "f");
+        }
+        if (!__classPrivateFieldGet(this, _ZodNativeEnum_cache, "f").has(input.data)) {
             const expectedValues = util.objectValues(nativeEnumValues);
             addIssueToContext(ctx, {
                 received: ctx.data,
@@ -48324,6 +48523,7 @@ class ZodNativeEnum extends ZodType {
         return this._def.values;
     }
 }
+_ZodNativeEnum_cache = new WeakMap();
 ZodNativeEnum.create = (values, params) => {
     return new ZodNativeEnum({
         values: values,
@@ -48393,33 +48593,43 @@ class ZodEffects extends ZodType {
         checkCtx.addIssue = checkCtx.addIssue.bind(checkCtx);
         if (effect.type === "preprocess") {
             const processed = effect.transform(ctx.data, checkCtx);
-            if (ctx.common.issues.length) {
-                return {
-                    status: "dirty",
-                    value: ctx.data,
-                };
-            }
             if (ctx.common.async) {
-                return Promise.resolve(processed).then((processed) => {
-                    return this._def.schema._parseAsync({
+                return Promise.resolve(processed).then(async (processed) => {
+                    if (status.value === "aborted")
+                        return INVALID;
+                    const result = await this._def.schema._parseAsync({
                         data: processed,
                         path: ctx.path,
                         parent: ctx,
                     });
+                    if (result.status === "aborted")
+                        return INVALID;
+                    if (result.status === "dirty")
+                        return DIRTY(result.value);
+                    if (status.value === "dirty")
+                        return DIRTY(result.value);
+                    return result;
                 });
             }
             else {
-                return this._def.schema._parseSync({
+                if (status.value === "aborted")
+                    return INVALID;
+                const result = this._def.schema._parseSync({
                     data: processed,
                     path: ctx.path,
                     parent: ctx,
                 });
+                if (result.status === "aborted")
+                    return INVALID;
+                if (result.status === "dirty")
+                    return DIRTY(result.value);
+                if (status.value === "dirty")
+                    return DIRTY(result.value);
+                return result;
             }
         }
         if (effect.type === "refinement") {
-            const executeRefinement = (acc
-            // effect: RefinementEffect<any>
-            ) => {
+            const executeRefinement = (acc) => {
                 const result = effect.refinement(acc, checkCtx);
                 if (ctx.common.async) {
                     return Promise.resolve(result);
@@ -48727,6 +48937,9 @@ class ZodReadonly extends ZodType {
         }
         return result;
     }
+    unwrap() {
+        return this._def.innerType;
+    }
 }
 ZodReadonly.create = (type, params) => {
     return new ZodReadonly({
@@ -48735,7 +48948,7 @@ ZodReadonly.create = (type, params) => {
         ...processCreateParams(params),
     });
 };
-const custom = (check, params = {}, 
+function custom(check, params = {}, 
 /**
  * @deprecated
  *
@@ -48746,7 +48959,7 @@ const custom = (check, params = {},
  * ```
  *
  */
-fatal) => {
+fatal) {
     if (check)
         return ZodAny.create().superRefine((data, ctx) => {
             var _a, _b;
@@ -48762,7 +48975,7 @@ fatal) => {
             }
         });
     return ZodAny.create();
-};
+}
 const late = {
     object: ZodObject.lazycreate,
 };
@@ -48880,6 +49093,7 @@ var z = /*#__PURE__*/Object.freeze({
     ZodParsedType: ZodParsedType,
     getParsedType: getParsedType,
     ZodType: ZodType,
+    datetimeRegex: datetimeRegex,
     ZodString: ZodString,
     ZodNumber: ZodNumber,
     ZodBigInt: ZodBigInt,
