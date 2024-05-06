@@ -231,7 +231,7 @@
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@types/lodash,@vercel/ncc,@vladcos/eslint-config,@vladcos/prettier-config,@vladcos/projen-github-action,@vladcos/tsconfig,eslint-import-resolver-typescript,execa,fs-jetpack,lodash,projen,replace-in-file,ts-extras,ts-node,type-fest,typescript,vite-tsconfig-paths,zod-to-json-schema,@actions/core,@actions/exec,@actions/github,zod"
+          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@types/lodash,@vercel/ncc,@vladcos/eslint-config,@vladcos/prettier-config,@vladcos/projen-github-action,@vladcos/tsconfig,eslint-import-resolver-typescript,execa,fs-jetpack,lodash,projen,replace-in-file,ts-extras,ts-node,type-fest,typescript,zod-to-json-schema,@actions/core,@actions/exec,zod"
         },
         {
           "exec": "npm install"
