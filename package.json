@@ -29,7 +29,7 @@
     "@vercel/ncc": "^0.38.1",
     "@vladcos/eslint-config": "^0.0.48",
     "@vladcos/prettier-config": "^0.0.43",
-    "@vladcos/projen-github-action": "^0.0.138",
+    "@vladcos/projen-github-action": "^0.0.144",
     "@vladcos/tsconfig": "^0.0.25",
     "alias-hq": "^6",
     "babel-plugin-module-resolver": "^5",
@@ -41,7 +41,7 @@
     "lodash": "^4.17.21",
     "packemon": "^3",
     "prettier": "^3",
-    "projen": "^0.81.6",
+    "projen": "^0.81.10",
     "replace-in-file": "^7.1.0",
     "standard-version": "^9",
     "ts-extras": "^0.11.0",
@@ -58,7 +58,7 @@
     "@actions/core": "^1.10.1",
     "@actions/exec": "^1.1.1",
     "@actions/github": "6",
-    "zod": "^3.23.6"
+    "zod": "^3.23.8"
   },
   "main": "./mjs/index.mjs",
   "license": "Apache-2.0",
