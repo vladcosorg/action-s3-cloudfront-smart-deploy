@@ -5,21 +5,7 @@ user::rwx
 group::r-x
 other::r-x
 
-# file: changelog.md
-# owner: runner
-# group: docker
-user::rw-
-group::r--
-other::r--
-
-# file: licenses.txt
-# owner: runner
-# group: docker
-user::rw-
-group::r--
-other::r--
-
-# file: permissions-backup.acl
+# file: index.mjs
 # owner: runner
 # group: docker
 user::rw-
@@ -33,21 +19,14 @@ user::rw-
 group::r--
 other::r--
 
-# file: sourcemap-register.cjs
+# file: licenses.txt
 # owner: runner
 # group: docker
 user::rw-
 group::r--
 other::r--
 
-# file: index.mjs.map
-# owner: runner
-# group: docker
-user::rw-
-group::r--
-other::r--
-
-# file: index.mjs
+# file: changelog.md
 # owner: runner
 # group: docker
 user::rw-
@@ -55,6 +34,27 @@ group::r--
 other::r--
 
 # file: releasetag.txt
+# owner: runner
+# group: docker
+user::rw-
+group::r--
+other::r--
+
+# file: sourcemap-register.cjs
+# owner: runner
+# group: docker
+user::rw-
+group::r--
+other::r--
+
+# file: permissions-backup.acl
+# owner: runner
+# group: docker
+user::rw-
+group::r--
+other::r--
+
+# file: index.mjs.map
 # owner: runner
 # group: docker
 user::rw-
