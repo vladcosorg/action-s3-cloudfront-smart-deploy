@@ -5,13 +5,6 @@ user::rwx
 group::r-x
 other::r-x
 
-# file: permissions-backup.acl
-# owner: runner
-# group: docker
-user::rw-
-group::r--
-other::r--
-
 # file: changelog.md
 # owner: runner
 # group: docker
@@ -26,7 +19,14 @@ user::rw-
 group::r--
 other::r--
 
-# file: licenses.txt
+# file: index.mjs.map
+# owner: runner
+# group: docker
+user::rw-
+group::r--
+other::r--
+
+# file: releasetag.txt
 # owner: runner
 # group: docker
 user::rw-
@@ -40,14 +40,14 @@ user::rw-
 group::r--
 other::r--
 
-# file: index.mjs.map
+# file: permissions-backup.acl
 # owner: runner
 # group: docker
 user::rw-
 group::r--
 other::r--
 
-# file: releasetag.txt
+# file: licenses.txt
 # owner: runner
 # group: docker
 user::rw-
