@@ -3,7 +3,7 @@
 name: S3 & Cloudfront Smart Invalidation - save money and avoid unnecessary cache invalidation.
 description: Analyze the changed files to S3 and minimize the number of Cloudfront invalidations and maximize cache hits
 runs:
-  using: node16
+  using: node20
   main: dist/index.mjs
 branding:
   color: blue
