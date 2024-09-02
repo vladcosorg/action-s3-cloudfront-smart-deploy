@@ -32,7 +32,8 @@
         "CHANGELOG": "dist/changelog.md",
         "BUMPFILE": "dist/version.txt",
         "RELEASETAG": "dist/releasetag.txt",
-        "RELEASE_TAG_PREFIX": ""
+        "RELEASE_TAG_PREFIX": "",
+        "BUMP_PACKAGE": "commit-and-tag-version@^12"
       },
       "steps": [
         {
@@ -215,7 +216,8 @@
         "CHANGELOG": "dist/changelog.md",
         "BUMPFILE": "dist/version.txt",
         "RELEASETAG": "dist/releasetag.txt",
-        "RELEASE_TAG_PREFIX": ""
+        "RELEASE_TAG_PREFIX": "",
+        "BUMP_PACKAGE": "commit-and-tag-version@^12"
       },
       "steps": [
         {
@@ -237,7 +239,7 @@
           "exec": "npm install"
         },
         {
-          "exec": "npm update @types/lodash @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser @vercel/ncc @vladcos/eslint-config @vladcos/prettier-config @vladcos/projen-github-action @vladcos/tsconfig alias-hq babel-plugin-module-resolver constructs eslint-import-resolver-typescript eslint execa fs-jetpack lodash packemon prettier projen replace-in-file standard-version ts-extras ts-node tsconfig-paths tsx type-fest typescript vite-tsconfig-paths vitest zod-to-json-schema @actions/core @actions/exec @actions/github zod"
+          "exec": "npm update @types/lodash @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser @vercel/ncc @vladcos/eslint-config @vladcos/prettier-config @vladcos/projen-github-action @vladcos/tsconfig alias-hq babel-plugin-module-resolver commit-and-tag-version constructs eslint-import-resolver-typescript eslint execa fs-jetpack lodash packemon prettier projen replace-in-file ts-extras ts-node tsconfig-paths tsx type-fest typescript vite-tsconfig-paths vitest zod-to-json-schema @actions/core @actions/exec @actions/github zod"
         },
         {
           "exec": "npx projen"
